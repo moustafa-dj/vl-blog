@@ -18,19 +18,25 @@ class LoginController extends Controller
     {
         $data = $request->validate([
             'email' => 'required|email',
-            'pass' => 'required|string|min:8|max:24'
+            'password' => 'required|string|min:8|max:24'
         ]);
 
-        $user = $this->user->findByAttribute(['email' => $data['email']]);
+        $user = $this->user->findBy(['email' => $data['email']]);
 
-        if($user)
+        if(!$user)
         {
-            return response()->json(['There is not record matches the credentials'],403);
+            return response()->json(['There is no record matches the credentials'],403);
         }
 
         return response()->json([
             'user' => UserResource::make($user),
-            'token' => $user->createToken()->plainTextToken
+            'token' => $user->createToken($user->id)->plainTextToken
         ]);
+    }
+
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+        return response()->json(['success'],201);
     }
 }

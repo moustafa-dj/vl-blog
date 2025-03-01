@@ -15,17 +15,21 @@ class BaseRepository implements FilterContract {
         $this->model = $model;
     }
 
-    public function create()
+    public function create(array $data)
     {
-
+        return $this->model::create($data);
     }
 
-    public function update()
+    public function update($model , $data)
     {
+        $model = $model instanceof $this->model ? $model : $this->findById($model);
 
+        $model->update($data);
+
+        return $model;
     }
 
-    public function destroy()
+    public function destroy($model)
     {
         
     }
