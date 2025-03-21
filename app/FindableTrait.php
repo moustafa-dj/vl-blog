@@ -5,12 +5,12 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 
-
 trait FindableTrait
 {
     protected Model $model;
     public array $relations = [];
     protected array $scopes = [];
+    protected int $perPage = 10; // Default number of items per page
 
     public function findByAttribute(array $attrs)
     {
@@ -47,7 +47,13 @@ trait FindableTrait
             
         $this->applyScopes($query);
 
-        return $query->get();
+        return $query->paginate($this->perPage); // Use paginate instead of get
+    }
+
+    public function setPerPage(int $perPage)
+    {
+        $this->perPage = $perPage;
+        return $this;
     }
 
     protected function applyScopes(Builder $query)
