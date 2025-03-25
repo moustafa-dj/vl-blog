@@ -11,7 +11,8 @@ class RepositoryProvider extends ServiceProvider
      */
 
     protected array $repos = [
-        \App\Contracts\UserContract::class => \App\Repositories\UserRepository::class
+        \App\Contracts\UserContract::class => \App\Repositories\UserRepository::class,
+        \App\Contracts\CategoryContract::class => \App\Repositories\CategoryRepository::class
     ];
 
     public function register(): void
