@@ -20,6 +20,7 @@
 <style>
 .container{
     max-width: 1200px;
+    margin: auto;
 }
 .nav {
   position: fixed; /* or absolute if needed */

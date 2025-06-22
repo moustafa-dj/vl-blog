@@ -3,12 +3,12 @@
 namespace App\Repositories;
 
 use App\Contracts\FilterContract;
-use App\FindableTrait;
+use App\Traits\Findable;
 use Illuminate\Database\Eloquent\Model;
 
 class BaseRepository implements FilterContract {
 
-    use FindableTrait;
+    use Findable;
 
     public function __construct(Model $model)
     {

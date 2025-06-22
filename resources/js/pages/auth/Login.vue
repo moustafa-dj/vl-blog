@@ -3,13 +3,13 @@
         <form  method="post">
             <label for="">Email</label>
             <br>
-            <input type="text" placeholder="email adress" name="email">
+            <input type="text" placeholder="email adress" name="email" v-model="email">
             <br>
             <label for="">Password</label>
             <br>
-            <input type="password" placeholder="password" name="password">
+            <input type="password" placeholder="password" name="password" v-model="password">
             <br>
-            <button @click="login">Login</button>
+            <button @click.prevent="login">Login</button>
         </form>
     </div>
 </template>
@@ -28,22 +28,15 @@ import axios from 'axios';
                 this.loading = true;
                 this.error = null;
 
-                try {
-                    const response = await axios.post("/api/login", {
+                const response = await axios.post("/api/v1/user/login", {
                     email: this.email,
                     password: this.password,
-                    });
-
-                    // Store token in local storage
+                }).then((response) =>{
                     localStorage.setItem("token", response.data.token);
-
-                    // Redirect user after login
-                    this.$router.push("/dashboard");
-                } catch (error) {
-                    this.error = error.response?.data?.message || "Login failed";
-                } finally {
-                    this.loading = false;
-                }
+                    this.$router.push({name:"posts"});
+                }).catch((error) => {
+                    console.log(error.response.data)
+                });
             },
         }
     }

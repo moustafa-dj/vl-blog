@@ -21,17 +21,17 @@ class LoginController extends Controller
             'password' => 'required|string|min:8|max:24'
         ]);
 
-        $user = $this->user->findBy(['email' => $data['email']]);
+        try{
+            $user = $this->user->findBy(['email' => $data['email']]);
+            return response()->json([
+                'user' => UserResource::make($user),
+                'token' => $user->createToken($user->id)->plainTextToken
+            ]);
 
-        if(!$user)
-        {
-            return response()->json(['There is no record matches the credentials'],403);
+        }catch(\Exception $e){
+            return response()->json([$e->getMessage()],403);
         }
 
-        return response()->json([
-            'user' => UserResource::make($user),
-            'token' => $user->createToken($user->id)->plainTextToken
-        ]);
     }
 
     public function logout(Request $request)
