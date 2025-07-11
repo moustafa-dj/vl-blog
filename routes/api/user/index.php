@@ -7,5 +7,6 @@ include 'auth.php';
 Route::get('categories' , CategoryController::class);
 
 Route::middleware('auth:user-api')->group(function(){
-
+    include 'post.php';
+    include 'comment.php';
 });
