@@ -4,7 +4,7 @@ const routes = [
     {path:'/' , name:'home' , component:()=>import('../pages/Home.vue')},
     {path:'/posts',name:'posts',component:()=>import('../pages/views/Post.vue'),
         meta:{
-            requirsdAuth:true
+            requiresAuth:true
         }
     }
 ]
@@ -15,7 +15,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to,from)=>{
-    if(to.meta.requiresAuth && !window.token)
+    if(to.meta.requiresAuth && !localStorage.token)
     {
         return {name:'login',query:{redirect:to.fullPath}}
     }

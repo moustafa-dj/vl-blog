@@ -3,19 +3,47 @@
         <div class="container">
             <div class="nav-content">
                 <ul>
-                    <li><router-link to="/login">Home</router-link></li>
-                    <li><router-link to="/login">Posts</router-link></li>
-                    <li><router-link to="/login">Categories</router-link></li>
-                    <li><router-link to="/login">My-Posts</router-link></li>
+                    <li><router-link :to="{name:'home'}">Home</router-link></li>
+                    <li><router-link :to="{name:'posts'}">Posts</router-link></li>
                 </ul>
                 
-                <router-link to="/login">Login</router-link>
+                <router-link to="/" @click="logout" v-if="auth == true">Logout</router-link>
+                <router-link to="/login" v-else >Login</router-link>
             </div>
         </div>
     </div>
 </template>
 <script>
+    import axios from 'axios'; 
+    export default {
 
+        data(){
+            return {
+                auth: localStorage.getItem('token') ? true : false
+            }
+
+        },
+        methods: {
+            async logout(){
+                console.log( `Bearer-${localStorage.getItem('token')}`)
+
+                const $res = await axios.post('/api/v1/user/logout',{},{
+                    headers:{
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        "Content-Type":"application/json"
+                    }
+                })
+                .then((res)=>{
+                    localStorage.removeItem('token')
+                    this.auth = false
+                    this.$router.push({name:"home"})
+                }).catch((rej)=>{
+                    console.log(rej.response.data);
+                })
+            }
+        },
+
+    }
 </script>
 <style>
 .container{
