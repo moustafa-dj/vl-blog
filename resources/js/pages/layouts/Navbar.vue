@@ -49,14 +49,16 @@
 .container{
     max-width: 1200px;
     margin: auto;
+    z-index: 60000;
 }
 .nav {
-  position: fixed; /* or absolute if needed */
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-  border-bottom: 1px solid #e5e7eb; /* Light gray border */
+    position: fixed; /* or absolute if needed */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    border-bottom: 1px solid #e5e7eb; /* Light gray border */
+    background-color: #fff;
 }
 
 .nav-content{

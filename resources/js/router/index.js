@@ -1,12 +1,12 @@
 import { createRouter , createWebHistory } from "vue-router";
 const routes = [
     {path:'/login' , name:'login' , component:()=>import('../pages/auth/Login.vue')},
-    {path:'/' , name:'home' , component:()=>import('../pages/Home.vue')},
-    {path:'/posts',name:'posts',component:()=>import('../pages/views/Post.vue'),
+    {path:'/' , name:'home' , component:()=>import('../pages/views/Posts/PostList.vue')},
+    {path:'/posts',name:'posts',component:()=>import('../pages/views/Posts/MyPosts.vue'),
         meta:{
             requiresAuth:true
         }
-    }
+    },
 ]
 
 const router = createRouter({

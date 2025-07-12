@@ -22,6 +22,10 @@ class Post extends Model
         'category_id' => 'integer'
     ];
 
+    public function scopeByUser($query , $user_id)
+    {
+        return  $query->where('user_id',$user_id);
+    }
     public function user()
     {
         return $this->belongsTo(User::class);

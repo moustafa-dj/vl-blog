@@ -60,6 +60,12 @@ trait Findable
         return $this;
     }
 
+    public function setScopes($scopes)
+    {
+        $this->scopes = $scopes;
+        return $this;
+    }
+
     public function getPerPage()
     {
         return $this->perPage;

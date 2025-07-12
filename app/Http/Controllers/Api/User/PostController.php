@@ -24,6 +24,17 @@ class PostController extends Controller
         ]);
     }
 
+    public function myPosts()
+    {
+        $posts = $this->post->withRelations(['category','tags','comments'])
+                            ->setScopes(['byUser'=> auth('user-api')->user()->id])
+                            ->findByFilter();
+
+        return response()->json([
+            'records' => PostResource::collection($posts),
+        ]);
+    }
+
     public function store(Request $request)
     {
         $data = $request->validate([

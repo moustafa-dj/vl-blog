@@ -3,8 +3,12 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::apiResource('posts',\App\Http\Controllers\Api\User\PostController::class)->except('update');
+Route::prefix('posts')->controller(\App\Http\Controllers\Api\User\PostController::class)->group(function(){
+    Route::post('/{id}','update');
+    Route::get('/my-posts','myPosts');
+});
 
-Route::post('posts/{id}',[\App\Http\Controllers\Api\User\PostController::class , 'update']);
+Route::apiResource('posts',\App\Http\Controllers\Api\User\PostController::class)->except('update','index');
+
 
 
