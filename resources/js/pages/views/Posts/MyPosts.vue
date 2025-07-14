@@ -1,5 +1,8 @@
 <template>
     <div class="content">
+        <div class="btn">
+            <router-link to="/add-post">Add Post</router-link>
+        </div>
         <Post v-for="post in postList" :key="post.id" :post="post"/>
     </div>
 </template>
@@ -40,5 +43,14 @@ export default {
 <style>
     .content {
         margin-top: 100px;
+    }
+    .btn{
+        width: 100px;
+        height: 40px;
+        padding: 6px;
+        background-color: #57C785;
+        color: #fff;
+        border-radius: 10px;
+        margin-bottom: 30px;
     }
 </style>

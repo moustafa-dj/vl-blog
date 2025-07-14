@@ -7,6 +7,7 @@ const routes = [
             requiresAuth:true
         }
     },
+    {path:'/add-post',name:'add-post',component:()=>import('../pages/views/Posts/AddPost.vue')}
 ]
 
 const router = createRouter({

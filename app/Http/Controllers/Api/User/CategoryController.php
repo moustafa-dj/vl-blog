@@ -20,6 +20,8 @@ class CategoryController extends Controller
     {
         $categories = $this->category->getAll();
 
-        return CategoryResource::collection($categories);
+        return response()->json([
+            'records' => CategoryResource::collection($categories),
+        ]);
     }
 }
