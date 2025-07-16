@@ -2,9 +2,14 @@
     <form class="post-form" @submit.prevent="addPost">
         <input type="text" v-model="post.title">
         <textarea name="content" id="" v-model="post.content"></textarea>
-        <select name="" id="" v-model="post.category_id">
+        <select name="category_id" id="" v-model="post.category_id">
             <option v-for="category in categories" :key="category.id" :value="category.id">
                 {{category.name}}
+            </option>
+        </select>
+        <select name="tags[]" id="" v-model="post.tags" multiple>
+            <option v-for="tag in tagsList" :key="tag.id" :value="tag.id">
+                {{tag.name}}
             </option>
         </select>
         <input type="file" name="cover" id="" @change="uploadCover">
@@ -22,12 +27,15 @@ export default {
                 content:null,
                 cover:null,
                 category_id:null,
+                tags:[]
             },
-            categories:[]
+            categories:[],
+            tagsList:[]
         }
     },
     mounted(){
-        this.getCategoyList()
+        this.getCategoyList(),
+        this.getTagsList()
     },
     methods:{
         async getCategoyList()
@@ -49,6 +57,9 @@ export default {
             postData.append('title',this.post.title)
             postData.append('content',this.post.content)
             postData.append('category_id',this.post.category_id)
+            this.post.tags.forEach((e , i) => {
+                postData.append(`tags[${i}]`,e)
+            })
 
             const res = await axios.post('api/v1/user/posts',
                 postData,{
@@ -59,6 +70,19 @@ export default {
             ).catch((error)=>{
                 console.log(error.response.data)
             })
+        },
+        async getTagsList(){
+            try{
+                const res = await axios.get('api/v1/user/tags',{
+                    headers:{
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        "Content-Type":"application/json"
+                    }
+                })
+                this.tagsList = res.data.records
+            }catch(error){
+                console.log(error.response.data)
+            }
         },
         uploadCover(event){
             this.post.cover = event.target.files[0]
