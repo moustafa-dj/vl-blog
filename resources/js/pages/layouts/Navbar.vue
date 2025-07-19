@@ -7,26 +7,25 @@
                     <li><router-link :to="{name:'posts'}">Posts</router-link></li>
                 </ul>
                 
-                <router-link to="/" @click="logout" v-if="auth == true">Logout</router-link>
+                <router-link to="/" @click="logout" v-if="authStore.auth">Logout</router-link>
                 <router-link to="/login" v-else >Login</router-link>
             </div>
         </div>
     </div>
 </template>
 <script>
-    import axios from 'axios'; 
+    import axios from 'axios';
+    import { authStore } from '../../stores/authStore';
     export default {
 
         data(){
             return {
-                auth: localStorage.getItem('token') ? true : false
+                authStore
             }
 
         },
         methods: {
             async logout(){
-                console.log( `Bearer-${localStorage.getItem('token')}`)
-
                 const $res = await axios.post('/api/v1/user/logout',{},{
                     headers:{
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -35,7 +34,7 @@
                 })
                 .then((res)=>{
                     localStorage.removeItem('token')
-                    this.auth = false
+                    authStore.setAuth(false)
                     this.$router.push({name:"home"})
                 }).catch((rej)=>{
                     console.log(rej.response.data);

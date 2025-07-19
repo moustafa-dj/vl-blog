@@ -15,12 +15,14 @@
 </template>
 <script>
 import axios from 'axios';
+import { authStore } from '../../stores/authStore';
 
     export default {
         data(){
             return {
                 email:'',
-                password:''
+                password:'',
+                authStore
             }
         },
         methods:{
@@ -33,6 +35,7 @@ import axios from 'axios';
                     password: this.password,
                 }).then((response) =>{
                     localStorage.setItem("token", response.data.token);
+                    authStore.setAuth(true)
                     this.$router.push({name:"posts"});
                 }).catch((error) => {
                     console.log(error.response.data)

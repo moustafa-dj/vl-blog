@@ -9,13 +9,15 @@
 <script>
 import axios from 'axios';
 import Post from '../../../components/Post.vue';
+import { authStore } from '../../../stores/authStore';
 export default {
 
     components:{Post},
 
     data() {
         return {
-            postList : []
+            postList : [],
+            authStore
         }
     },
     mounted(){
@@ -26,7 +28,7 @@ export default {
 
             const res = await axios.get('api/v1/user/posts/my-posts',{
                 headers:{
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Authorization': `Bearer ${authStore.getAuthorization()}`,
                     "Content-Type":"application/json"
                 }
             })

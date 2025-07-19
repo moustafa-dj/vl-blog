@@ -19,6 +19,7 @@
 
 <script>
 import axios from 'axios';
+import { authStore } from '../../../stores/authStore';
 export default {
     data(){
         return {
@@ -30,7 +31,8 @@ export default {
                 tags:[]
             },
             categories:[],
-            tagsList:[]
+            tagsList:[],
+            authStore
         }
     },
     mounted(){
@@ -42,7 +44,7 @@ export default {
         {
             const res = await axios.get('api/v1/user/categories',{
                 headers:{
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Authorization': `Bearer ${authStore.getAuthorization()}`,
                     "Content-Type":"application/json"
                 }
             }).then((res) => {
@@ -64,7 +66,7 @@ export default {
             const res = await axios.post('api/v1/user/posts',
                 postData,{
                 headers:{
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Authorization': `Bearer ${authStore.getAuthorization()}`,
                 }
             },
             ).catch((error)=>{
@@ -75,7 +77,7 @@ export default {
             try{
                 const res = await axios.get('api/v1/user/tags',{
                     headers:{
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'Authorization': `Bearer ${authStore.getAuthorization()}`,
                         "Content-Type":"application/json"
                     }
                 })
