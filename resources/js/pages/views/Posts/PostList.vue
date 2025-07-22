@@ -7,6 +7,7 @@
 import axios from 'axios';
 import Post from '../../../components/Post.vue';
 import { authStore } from '../../../stores/authStore';
+import { searchStore } from '../../../stores/searchStore';
 export default {
 
     components:{Post},
@@ -14,7 +15,8 @@ export default {
     data() {
         return {
             postList : [],
-            authStore
+            authStore,
+            searchStore
         }
     },
     mounted(){
@@ -27,6 +29,9 @@ export default {
                 headers:{
                     'Authorization': `Bearer ${authStore.getAuthorization()}`,
                     "Content-Type":"application/json"
+                },
+                params:{
+                    search : searchStore.search
                 }
             })
             .then((res)=>{
@@ -36,6 +41,11 @@ export default {
             })
 
         },
+    },
+    watch:{
+        'searchStore.search'(value){
+            this.getPostsList()
+        }
     }
 }
 </script>

@@ -6,8 +6,10 @@
                     <li><router-link :to="{name:'home'}">Home</router-link></li>
                     <li><router-link :to="{name:'posts'}">Posts</router-link></li>
                 </ul>
-                
-                <router-link to="/" @click="logout" v-if="authStore.auth">Logout</router-link>
+                <div class="search">
+                    <input type="search" placeholder="...search" v-model="searchStore.search">
+                </div>
+                <router-link to="/" @click.prevent="logout" v-if="isAuthenticated">Logout</router-link>
                 <router-link to="/login" v-else >Login</router-link>
             </div>
         </div>
@@ -16,11 +18,12 @@
 <script>
     import axios from 'axios';
     import { authStore } from '../../stores/authStore';
+    import { searchStore } from '../../stores/searchStore';
     export default {
 
         data(){
             return {
-                authStore
+                searchStore,
             }
 
         },
@@ -39,8 +42,15 @@
                 }).catch((rej)=>{
                     console.log(rej.response.data);
                 })
-            }
+            },
         },
+
+        computed:{
+            isAuthenticated()
+            {
+                  return authStore.auth
+            }
+        }
 
     }
 </script>
@@ -69,5 +79,12 @@
 .nav-content ul li {
     display: inline;
     margin: 10px;
+}
+.search input {
+    background-color: #eee;
+    outline: none;
+    border-radius: 5px;
+    padding: 7px;
+    width: 500px;
 }
 </style>

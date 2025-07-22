@@ -10,9 +10,11 @@ class BaseRepository implements FilterContract {
 
     use Findable;
 
-    public function __construct(Model $model)
+    public function __construct(Model $model , array $filters = [] , array $search=[])
     {
         $this->model = $model;
+        $this->filters = $filters;
+        $this->search = $search;
     }
 
     public function create(array $data)

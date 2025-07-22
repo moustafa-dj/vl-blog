@@ -22,7 +22,6 @@ import { authStore } from '../../stores/authStore';
             return {
                 email:'',
                 password:'',
-                authStore
             }
         },
         methods:{
@@ -48,7 +47,7 @@ import { authStore } from '../../stores/authStore';
 .login-form{
     padding: 20px;
 }
-input{
+.login-form input{
     margin: 10px 0;
     border: 1px solid #e5e7eb; /* Light gray border */
     padding: 8px;

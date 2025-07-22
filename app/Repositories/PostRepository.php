@@ -8,9 +8,13 @@ use App\Services\FileUploadService;
 
 class PostRepository extends BaseRepository implements PostContract
 {
-    public function __construct(Post $model)
+    public function __construct(Post $model  ,array  $filters = [],
+    array $search = [
+        'title',
+    ])
     {
         $this->model = $model;
+        parent::__construct($model, $filters,$search);
     }
 
     public function create(array $data)
