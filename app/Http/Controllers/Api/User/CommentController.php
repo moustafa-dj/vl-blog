@@ -16,8 +16,10 @@ class CommentController extends Controller
 
     public function index(Request $request)
     {
-        $comments = $this->comment->withRelations(['user','post'])->findByFilter();
-
+        $comments = $this->comment->withRelations(['user','post'])
+                                  ->setScopes(['byPost'=> $request->input('post_id')])
+                                  ->findByFilter();
+                                  
         return response()->json([
             'records' => CommentResource::collection($comments),
         ]);

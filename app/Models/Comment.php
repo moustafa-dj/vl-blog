@@ -18,6 +18,10 @@ class Comment extends Model
         'post_id' => 'integer'
     ];
 
+    public function scopeByPost($query , $post_id)
+    {
+        return $query->where('post_id',$post_id);
+    }
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

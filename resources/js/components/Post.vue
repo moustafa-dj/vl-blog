@@ -7,13 +7,27 @@
         <p>
             {{post.content}}
         </p>
+        <CommentForm :post="this.post" @commentAdded="refreshKey=Date.now()"/>
+        <Comment :post="this.post" :refreshKey="this.refreshKey" />
     </div>
 </template>
 <script>
+import Comment from './Comment.vue';
+import CommentForm from './Forms/Comment/CommentForm.vue';
+
 export default {
     props: [
         'post',
     ],
+    data(){
+        return {
+            refreshKey: Date.now()
+        }
+    },
+    components:{
+        CommentForm,
+        Comment
+    },
 
     methods:{
         getImgUrl(cover)

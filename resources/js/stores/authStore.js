@@ -2,7 +2,7 @@ import { reactive } from "vue";
 
 export const authStore = reactive({
     
-     auth: !!localStorage.getItem('token'),
+    auth: !!localStorage.getItem('token'),
 
     isAuthenticated(){
         return  this.auth =  !!localStorage.getItem('token')
