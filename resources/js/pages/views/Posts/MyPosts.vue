@@ -1,8 +1,8 @@
 <template>
+    <div class="btn">
+        <router-link to="/add-post">Add Post</router-link>
+    </div>
     <div class="content">
-        <div class="btn">
-            <router-link to="/add-post">Add Post</router-link>
-        </div>
         <Post v-for="post in postList" :key="post.id" :post="post"/>
     </div>
 </template>

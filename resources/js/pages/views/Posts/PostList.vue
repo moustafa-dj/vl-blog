@@ -1,6 +1,8 @@
 <template>
-    <div class="content">
-        <Post v-for="post in postList" :key="post.id" :post="post"/>
+    <div class="container">
+        <div class="content">
+            <Post v-for="post in postList" :key="post.id" :post="post"/>
+        </div>
     </div>
 </template>
 <script>
@@ -49,8 +51,25 @@ export default {
     }
 }
 </script>
-<style>
-    .content {
-        margin-top: 100px;
-    }
+<style scoped>
+.container {
+    max-width: 1000px;
+    margin: auto;
+}
+
+.content {
+    margin-top: 100px;
+    display: flex;
+    flex-wrap: wrap; /* Allow multiple rows */
+    gap: 20px; /* spacing between posts */
+    justify-content: space-between;
+}
+
+/* Make each post take 1/3 of the row minus the gap */
+.content .post {
+    flex: 1 1 calc(33.333% - 20px); /* 3 posts per row with spacing */
+    max-width: calc(33.333% - 20px);
+    box-sizing: border-box;
+}
+
 </style>

@@ -97,5 +97,20 @@ trait Findable
 
         return $query->firstOrFail();
     }
+
+    public function findWithoutPagination()
+    {
+         $query = $this->model::query()
+                ->with($this->relations)
+                ->scopes($this->scopes);
+
+        if(request()->has('search') && request()->filled('search'))
+        {
+            $query->whereAny($this->search , 'LIKE', '%'.request('search').'%');
+        }
+        $this->applyFilters($query);
+        
+        return $query?->get();
+    }
     
 }

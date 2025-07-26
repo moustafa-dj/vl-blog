@@ -9,5 +9,6 @@ interface FilterContract{
     public function findBy(array $params);
     public function withRelations(array $relations);
     public function findByFilter();
+    public function findWithoutPagination();
 
 }

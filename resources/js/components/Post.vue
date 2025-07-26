@@ -8,7 +8,9 @@
             {{post.content}}
         </p>
         <CommentForm :post="this.post" @commentAdded="refreshKey=Date.now()"/>
-        <Comment :post="this.post" :refreshKey="this.refreshKey" />
+        <div class="comment-list">
+            <!-- <Comment v-for="comment in commentList" :key="comment.id" :comment="comment"/> -->
+        </div>
     </div>
 </template>
 <script>
@@ -21,7 +23,8 @@ export default {
     ],
     data(){
         return {
-            refreshKey: Date.now()
+            refreshKey: Date.now(),
+            commentList:[]
         }
     },
     components:{
@@ -29,17 +32,44 @@ export default {
         Comment
     },
 
+    mounted(){
+        this.getComments()
+    },
+
     methods:{
         getImgUrl(cover)
         {
             return 'file/'+cover
+        },
+        
+        async getComments()
+        {
+            try{
+                const res = await axios.get('/api/v1/user/comments',{
+                    params:{
+                        post_id: this.post.id,
+                    }
+                })
+
+                this.commentList = res.data.records
+                console.log(this.commentList)
+
+            }catch(error){
+
+            }
+        }
+    },
+    watch:{
+        refreshKey(){
+          console.log('refreshKey changed:', this.refreshKey);
+          this.getComments()
         }
     }
 }
 </script>
 <style>
     .post {
-        width: 100%;
+        height: 400px;
         max-width: 500px;
         border: 1px solid #e5e7eb;
         border-radius: 10px;
@@ -47,6 +77,7 @@ export default {
         background-color: #fff;
         transition: transform 0.2s;
         margin-bottom: 20px;
+        border: 1px solid rgba(77, 96, 138, 0.21);
     }
 
     .post:hover {
@@ -54,7 +85,7 @@ export default {
     }
 
     .post .cover {
-        height: 250px;
+        height: 150px;
         overflow: hidden;
     }
 
@@ -77,5 +108,8 @@ export default {
         font-size: 14px;
         color: #4b5563;
         line-height: 1.5;
+    }
+    .comment-list{
+        padding: 0 20px;
     }
 </style>

@@ -66,7 +66,7 @@
     left: 0;
     width: 100%;
     z-index: 1000;
-    border-bottom: 1px solid #e5e7eb; /* Light gray border */
+    border-bottom: 1px solid rgba(77, 96, 138, 0.21);
     background-color: #fff;
 }
 

@@ -18,7 +18,7 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $posts = $this->post->withRelations(['category','tags','comments'])
-                            ->findByFilter();
+                            ->findWithoutPagination();
 
         return response()->json([
             'records' => PostResource::collection($posts),

@@ -18,7 +18,7 @@ class CommentController extends Controller
     {
         $comments = $this->comment->withRelations(['user','post'])
                                   ->setScopes(['byPost'=> $request->input('post_id')])
-                                  ->findByFilter();
+                                  ->findWithoutPagination();
                                   
         return response()->json([
             'records' => CommentResource::collection($comments),
