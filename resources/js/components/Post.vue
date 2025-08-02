@@ -3,7 +3,12 @@
         <div class="cover">
             <img :src="getImgUrl(post.cover)" alt="">
         </div>
-        <h5>{{post.title}}</h5>
+        <div class="post-header">
+            <h5>{{ post.title }}</h5>
+            <router-link :to="{name:'edit-post' ,params:{'id': post.id}}" class="edit-link" v-if="isAuthunticated">
+                ✏️ Edit
+            </router-link>
+        </div>
         <p>
             {{post.content}}
         </p>
@@ -14,6 +19,7 @@
     </div>
 </template>
 <script>
+import { authStore } from '../stores/authStore';
 import Comment from './Comment.vue';
 import CommentForm from './Forms/Comment/CommentForm.vue';
 
@@ -36,6 +42,11 @@ export default {
         this.getComments()
     },
 
+    computed:{
+        isAuthunticated(){
+            return authStore.auth
+        }
+    },
     methods:{
         getImgUrl(cover)
         {
@@ -74,7 +85,7 @@ export default {
         border: 1px solid #e5e7eb;
         border-radius: 10px;
         overflow: hidden;
-        background-color: #fff;
+        background-color: #fafaf9;
         transition: transform 0.2s;
         margin-bottom: 20px;
         border: 1px solid rgba(77, 96, 138, 0.21);
@@ -112,4 +123,27 @@ export default {
     .comment-list{
         padding: 0 20px;
     }
+
+    .post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 12px;
+    }
+
+    .edit-link {
+    font-size: 14px;
+    background-color: #f3f4f6;
+    color: #2563eb;
+    padding: 6px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .edit-link:hover {
+    background-color: #e0e7ff;
+    color: #1e3a8a;
+    }
+
 </style>

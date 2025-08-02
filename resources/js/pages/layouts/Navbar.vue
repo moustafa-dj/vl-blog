@@ -5,6 +5,7 @@
                 <ul>
                     <li><router-link :to="{name:'home'}">Home</router-link></li>
                     <li><router-link :to="{name:'posts'}">Posts</router-link></li>
+                    <li><router-link :to="{name:'add-post'}" v-if="isAuthenticated">Add Post</router-link></li>
                 </ul>
                 <div class="search">
                     <input type="search" placeholder="...search" v-model="searchStore.search">

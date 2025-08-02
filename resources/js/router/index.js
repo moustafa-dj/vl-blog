@@ -1,4 +1,4 @@
-import { createRouter , createWebHistory } from "vue-router";
+import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
     {path:'/login' , name:'login' , component:()=>import('../pages/auth/Login.vue')},
     {path:'/' , name:'home' , component:()=>import('../pages/views/Posts/PostList.vue')},
@@ -7,11 +7,22 @@ const routes = [
             requiresAuth:true
         }
     },
-    {path:'/add-post',name:'add-post',component:()=>import('../pages/views/Posts/AddPost.vue')}
+    {path:'/add-post',name:'add-post',component:()=>import('../pages/views/Posts/AddPost.vue'),
+            meta:{
+                requiresAuth:true
+            }
+    },
+
+    {path:'/edit-post/:id',name:'edit-post', component:()=>import('../pages/views/Posts/EditPost.vue'),
+        meta:{
+            requiresAuth:true
+        }
+    }
+
 ]
 
 const router = createRouter({
-    history:createWebHistory(),
+    history: createWebHistory(),
     routes
 })
 

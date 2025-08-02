@@ -42,7 +42,7 @@ export default {
     methods:{
         async getCategoyList()
         {
-            const res = await axios.get('api/v1/user/categories',{
+            const res = await axios.get('/api/v1/user/categories',{
                 headers:{
                     'Authorization': `Bearer ${authStore.getAuthorization()}`,
                     "Content-Type":"application/json"
@@ -63,7 +63,7 @@ export default {
                 postData.append(`tags[${i}]`,e)
             })
 
-            const res = await axios.post('api/v1/user/posts',
+            const res = await axios.post('/api/v1/user/posts',
                 postData,{
                 headers:{
                     'Authorization': `Bearer ${authStore.getAuthorization()}`,

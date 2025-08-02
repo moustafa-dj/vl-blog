@@ -71,16 +71,23 @@ class PostController extends Controller
         $data = $request->validate([
             'content' => 'required|string|max:1024',
             'title' => 'required|string|max:256',
-            'cover' => 'required|file|mimes:png,jpg,jpeg',
+            'cover' => 'nullable|file|mimes:png,jpg,jpeg',
             'category_id' => 'required|exists:categories,id',
             'tags' => 'nullable|array',
             'tags.*' => 'required|exists:tags,id'
         ]);
 
-        $post = $this->post->update($id , $data);
+        try{
+            $post = $this->post->update($id , $data);
 
-        return response()->json([
-            'record' => PostResource::make($post->load('category','tags','comments')),
-        ]);
+            return response()->json([
+                'record' => PostResource::make($post->load('category','tags','comments')),
+            ]);
+        }catch(\Exception $e){
+            return response()->json([
+                'error' => $e->getMessage()
+            ]);
+        }
+
     }
 }
