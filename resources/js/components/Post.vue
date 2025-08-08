@@ -5,9 +5,19 @@
         </div>
         <div class="post-header">
             <h5>{{ post.title }}</h5>
-            <router-link :to="{name:'edit-post' ,params:{'id': post.id}}" class="edit-link" v-if="isAuthunticated">
+            <router-link :to="{name:'edit-post' ,params:{'id': post.id}}" 
+                            class="edit-link" 
+                            v-if="isAuthenticated  && post.user?.id === userId"
+            >
                 ✏️ Edit
             </router-link>
+
+            <button
+                v-if="isAuthenticated  && post.user?.id === userId"
+                class="delete-btn"
+                @click="deletePost"
+            >Delete
+            </button>
         </div>
         <p>
             {{post.content}}
@@ -19,6 +29,7 @@
     </div>
 </template>
 <script>
+import axios from 'axios';
 import { authStore } from '../stores/authStore';
 import Comment from './Comment.vue';
 import CommentForm from './Forms/Comment/CommentForm.vue';
@@ -27,10 +38,14 @@ export default {
     props: [
         'post',
     ],
+    emits:[
+        'delete-post'
+    ],
     data(){
         return {
             refreshKey: Date.now(),
-            commentList:[]
+            commentList:[],
+            authStore
         }
     },
     components:{
@@ -43,8 +58,11 @@ export default {
     },
 
     computed:{
-        isAuthunticated(){
+        isAuthenticated (){
             return authStore.auth
+        },
+        userId(){
+            return authStore.userId
         }
     },
     methods:{
@@ -63,9 +81,24 @@ export default {
                 })
 
                 this.commentList = res.data.records
-                console.log(this.commentList)
-
             }catch(error){
+
+            }
+        },
+        async deletePost()
+        {
+            try{
+                const res = await axios.delete('/api/v1/user/posts/'+this.post.id,{
+                    headers:{
+                        'Authorization': `Bearer ${authStore.getAuthorization()}`,
+                        "Content-Type":"application/json"
+                    },
+                })
+
+                this.$emit('delete-post')
+
+            }catch(error)
+            {
 
             }
         }
@@ -125,25 +158,35 @@ export default {
     }
 
     .post-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 12px;
     }
 
     .edit-link {
-    font-size: 14px;
-    background-color: #f3f4f6;
-    color: #2563eb;
-    padding: 6px 12px;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: background-color 0.2s ease, color 0.2s ease;
+        font-size: 14px;
+        background-color: #f3f4f6;
+        color: #2563eb;
+        padding: 6px 12px;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: background-color 0.2s ease, color 0.2s ease;
     }
 
     .edit-link:hover {
-    background-color: #e0e7ff;
-    color: #1e3a8a;
+        background-color: #e0e7ff;
+        color: #1e3a8a;
+    }
+    .delete-btn {
+        font-size: 14px;
+        background-color: #f3f4f6;
+        color: #2563eb;
+        padding: 6px 12px;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: background-color 0.2s ease, color 0.2s ease;
+        cursor: pointer;
     }
 
 </style>

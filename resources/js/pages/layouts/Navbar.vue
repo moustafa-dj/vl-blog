@@ -37,8 +37,7 @@
                     }
                 })
                 .then((res)=>{
-                    localStorage.removeItem('token')
-                    authStore.setAuth(false)
+                    authStore.logout()
                     this.$router.push({name:"home"})
                 }).catch((rej)=>{
                     console.log(rej.response.data);

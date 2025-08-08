@@ -22,8 +22,6 @@ import { authStore } from '../../../stores/authStore';
 
 export default {
 
-    props:['post'],
-
     data(){
         return {
             form:{

@@ -33,7 +33,11 @@ class BaseRepository implements FilterContract {
 
     public function destroy($model)
     {
+        $model = $model instanceof $this->model ? $model : $this->findById($model);
+
+        $model->delete();
         
+        return $model;
     }
 
 

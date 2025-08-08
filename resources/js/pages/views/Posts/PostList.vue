@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="content">
-            <Post v-for="post in postList" :key="post.id" :post="post"/>
+            <Post v-for="post in postList" :key="post.id" :post="post" @delete-post="getPostsList"/>
         </div>
     </div>
 </template>
@@ -47,7 +47,7 @@ export default {
     watch:{
         'searchStore.search'(value){
             this.getPostsList()
-        }
+        },
     }
 }
 </script>

@@ -33,8 +33,10 @@ import { authStore } from '../../stores/authStore';
                     email: this.email,
                     password: this.password,
                 }).then((response) =>{
-                    localStorage.setItem("token", response.data.token);
-                    authStore.setAuth(true)
+                    authStore.login(
+                        response.data.token,
+                        response.data.user.id
+                    )
                     this.$router.push({name:"posts"});
                 }).catch((error) => {
                     console.log(error.response.data)

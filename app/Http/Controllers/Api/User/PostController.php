@@ -17,7 +17,7 @@ class PostController extends Controller
 
     public function index(Request $request)
     {
-        $posts = $this->post->withRelations(['category','tags','comments'])
+        $posts = $this->post->withRelations(['category','tags','comments','user'])
                             ->findWithoutPagination();
 
         return response()->json([
@@ -27,7 +27,7 @@ class PostController extends Controller
 
     public function myPosts()
     {
-        $posts = $this->post->withRelations(['category','tags','comments'])
+        $posts = $this->post->withRelations(['category','tags','comments','user'])
                             ->setScopes(['byUser'=> auth('user-api')->user()->id])
                             ->findByFilter();
 
@@ -53,16 +53,16 @@ class PostController extends Controller
         ]);
 
         return response()->json([
-            'record' => PostResource::make($post->load('category','tags','comments')),
+            'record' => PostResource::make($post->load('category','tags','comments','user')),
         ]);
     }
 
     public function show($id)
     {
-        $post = $this->post->withRelations(['category','tags','comments'])->findById($id);
+        $post = $this->post->withRelations(['category','tags','comments','user'])->findById($id);
 
         return response()->json([
-            'record' => PostResource::make($post),
+            'record' => PostResource::make($post)
         ]);
     }
 
@@ -81,7 +81,7 @@ class PostController extends Controller
             $post = $this->post->update($id , $data);
 
             return response()->json([
-                'record' => PostResource::make($post->load('category','tags','comments')),
+                'record' => PostResource::make($post->load('category','tags','comments','user')),
             ]);
         }catch(\Exception $e){
             return response()->json([
@@ -89,5 +89,20 @@ class PostController extends Controller
             ]);
         }
 
+    }
+
+    public function destroy($id)
+    {
+        try{
+            $post = $this->post->destroy($id);
+
+            return response()->json([
+                'record' => $post,
+            ]);
+        }catch(\Exception $e){
+            return response()->json([
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 }
