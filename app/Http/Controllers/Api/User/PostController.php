@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\User;
 
 use App\Contracts\PostContract;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PostRequest;
 use App\Http\Resources\PostResource;
 use Illuminate\Http\Request;
 
@@ -36,25 +37,27 @@ class PostController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
-        $data = $request->validate([
-            'content' => 'required|string|max:1024',
-            'title' => 'required|string|max:256',
-            'cover' => 'nullable|file|mimes:png,jpg,jpeg',
-            'category_id' => 'required|exists:categories,id',
-            'tags' => 'nullable|array',
-            'tags.*' => 'required|exists:tags,id'
-        ]);
+        $data = $request->validated();
 
-        $post = $this->post->create([
-            ...$data,
-            'user_id' => auth('user-api')->user()->id,
-        ]);
+        try{
 
-        return response()->json([
-            'record' => PostResource::make($post->load('category','tags','comments','user')),
-        ]);
+            $post = $this->post->create([
+                ...$data,
+                'user_id' => auth('user-api')->user()->id,
+            ]);
+
+            return response()->json([
+                'record' => PostResource::make($post->load('category','tags','comments','user')),
+            ]);
+
+        }catch(\Exception $e)
+        {
+            return response()->json([
+                'erros' => $e,
+            ]);
+        }
     }
 
     public function show($id)

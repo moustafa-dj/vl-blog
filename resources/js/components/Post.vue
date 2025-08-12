@@ -20,7 +20,7 @@
             </button>
         </div>
         <p>
-            {{post.content}}
+            {{shortenContent}}
         </p>
         <CommentForm :post="this.post" @commentAdded="refreshKey=Date.now()"/>
         <div class="comment-list">
@@ -63,6 +63,9 @@ export default {
         },
         userId(){
             return authStore.userId
+        },
+        shortenContent(){
+            return this.post.content.substr(0,30) + '...'
         }
     },
     methods:{

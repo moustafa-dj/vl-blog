@@ -20,6 +20,7 @@
 <script>
 import axios from 'axios';
 import { authStore } from '../../../stores/authStore';
+import { useToast } from 'vue-toastification';
 export default {
     data(){
         return {
@@ -32,6 +33,7 @@ export default {
             },
             categories:[],
             tagsList:[],
+            errors:[],
             authStore
         }
     },
@@ -49,11 +51,13 @@ export default {
                 }
             }).then((res) => {
                 this.categories = res.data.records
+
             }).catch((error)=>{
                 console.log(error.response.data)
             })
         },
         async addPost(){
+            const toast =  useToast();
             const postData = new FormData();
             postData.append('cover',this.post.cover)
             postData.append('title',this.post.title)
@@ -69,8 +73,10 @@ export default {
                     'Authorization': `Bearer ${authStore.getAuthorization()}`,
                 }
             },
+            toast.success('Post added successfully')
             ).catch((error)=>{
-                console.log(error.response.data)
+                console.log(this.errors)
+                console.log(error.response)
             })
         },
         async getTagsList(){

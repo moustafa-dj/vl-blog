@@ -2,10 +2,11 @@
     <form class="post-form" @submit.prevent="updatePost">
         <input type="text" v-model="form.title">
         <textarea name="content" id="" v-model="form.content"></textarea>
-        <select name="category_id" id="" v-model="form.category_id">
-            <option v-for="category in categories" :key="category.id" :value="category.id"
-            :selected ="category.id === form.category_id">
-                {{category.name}}
+        <select name="category_id" v-model="form.category_id">
+            <option v-for="category in categories" 
+                    :key="category.id" 
+                    :value="category.id">
+                {{selectedCategoryName}}
             </option>
         </select>
         <select name="tags[]" id="" v-model="form.tags" multiple>
@@ -13,12 +14,21 @@
                 {{tag.name}}
             </option>
         </select>
+        <div v-if="form.cover" class="mb-2">
+            <img 
+                :src="imgUrl" 
+                alt="Current cover" 
+                class="w-24 h-24 object-cover rounded shadow"
+                id="cover-img"
+            >
+        </div>
         <input type="file" name="cover" id="" @change="uploadCover">
         <button type="submit">Update</button>
     </form>
 </template>
 <script>
 import { authStore } from '../../../stores/authStore';
+import { useToast } from 'vue-toastification';
 
 export default {
 
@@ -32,7 +42,8 @@ export default {
                 tags:[]
             },
             categories:[],
-            tagsList:[]
+            tagsList:[],
+            imgUrl:null
         }
     },
     methods:{
@@ -45,7 +56,6 @@ export default {
                         "Content-Type":"application/json"
                     },
                 })
-
                 this.setForm(res.data.record)
             }catch(error){
                 console.log(error)
@@ -75,15 +85,19 @@ export default {
                 title: post.title,
                 content: post.content,
                 cover: post.cover,
-                category_id: post.category_id,
-                tags: post.tags
+                category_id: post.category.id,
+                tags: post.tags.map(tag => tag.id)
             }
+            this.cover()
         },
         async updatePost(){
+            const toast = useToast()
             try{
                 const postData = new FormData()
-                postData.append('title',this.form.title),
-                postData.append('cover',this.form.cover),
+                postData.append('title',this.form.title)
+                if(this.form.cover instanceof File) {
+                    postData.append('cover', this.form.cover)
+                }
                 postData.append('content',this.form.content),
                 postData.append('category_id',this.form.category_id)
                 this.form.tags.forEach((e , i) =>{
@@ -98,14 +112,29 @@ export default {
                         },
                     }
                 )
-
-                this.setForm(res.data.record)
+                toast.success('post updated successfully')
             }catch(error){
+                toast.error(error.data)
                 console.log(error)
             }
         },
         uploadCover(event){
-            this.form.cover = event.target.files[0]
+            const file = event.target.files[0]
+            this.form.cover = file
+            this.imgUrl = URL.createObjectURL(file)
+        },
+
+        cover()
+        {
+            const urlFromCover =   '/file/'+ this.form.cover
+            this.imgUrl = urlFromCover
+        }
+    },
+    computed:{
+        selectedCategoryName() {
+            const cat = this.categories.find(c => c.id === this.form.category_id)
+
+            return cat ? cat.name : ''
         }
     },
     watch:{
