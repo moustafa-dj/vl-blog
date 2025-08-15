@@ -4,7 +4,11 @@
             <img :src="getImgUrl(post.cover)" alt="">
         </div>
         <div class="post-header">
-            <h5>{{ post.title }}</h5>
+            <h5>
+                <router-link :to="{name:'post-details',params:{'id':post.id}}">
+                    {{ post.title }} / read more...
+                </router-link>
+            </h5>
             <router-link :to="{name:'edit-post' ,params:{'id': post.id}}" 
                             class="edit-link" 
                             v-if="isAuthenticated  && post.user?.id === userId"
@@ -22,17 +26,11 @@
         <p>
             {{shortenContent}}
         </p>
-        <CommentForm :post="this.post" @commentAdded="refreshKey=Date.now()"/>
-        <div class="comment-list">
-            <!-- <Comment v-for="comment in commentList" :key="comment.id" :comment="comment"/> -->
-        </div>
     </div>
 </template>
 <script>
 import axios from 'axios';
 import { authStore } from '../stores/authStore';
-import Comment from './Comment.vue';
-import CommentForm from './Forms/Comment/CommentForm.vue';
 
 export default {
     props: [
@@ -43,18 +41,9 @@ export default {
     ],
     data(){
         return {
-            refreshKey: Date.now(),
             commentList:[],
             authStore
         }
-    },
-    components:{
-        CommentForm,
-        Comment
-    },
-
-    mounted(){
-        this.getComments()
     },
 
     computed:{
@@ -73,21 +62,7 @@ export default {
         {
             return 'file/'+cover
         },
-        
-        async getComments()
-        {
-            try{
-                const res = await axios.get('/api/v1/user/comments',{
-                    params:{
-                        post_id: this.post.id,
-                    }
-                })
-
-                this.commentList = res.data.records
-            }catch(error){
-
-            }
-        },
+    
         async deletePost()
         {
             try{
@@ -106,12 +81,6 @@ export default {
             }
         }
     },
-    watch:{
-        refreshKey(){
-          console.log('refreshKey changed:', this.refreshKey);
-          this.getComments()
-        }
-    }
 }
 </script>
 <style>

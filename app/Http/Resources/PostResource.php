@@ -23,6 +23,7 @@ class PostResource extends JsonResource
             'tags' => TagResource::collection($this->whenLoaded('tags')),
             'comments' => CommentResource::collection($this->whenLoaded('comments')),
             'user' => UserResource::make($this->whenLoaded('user')),
+            'created_at' => $this->created_at,
         ];
     }
 }

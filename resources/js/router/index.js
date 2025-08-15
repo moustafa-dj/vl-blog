@@ -19,6 +19,8 @@ const routes = [
         }
     },
 
+    {path:'/post/:id',name:'post-details',component:()=>import('../pages/views/Posts/PostDetails.vue')}
+
 ]
 
 const router = createRouter({

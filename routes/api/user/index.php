@@ -12,10 +12,12 @@ Route::get('categories' , CategoryController::class);
 Route::get('tags' , TagsController::class);
 Route::get('/comments',[CommentController::class , 'index']);
 
-Route::get('/posts' , [PostController::class,'index']);
-
-
 Route::middleware('auth:user-api')->group(function(){
     include 'post.php';
     include 'comment.php';
+});
+
+Route::prefix('posts')->controller(PostController::class)->group(function(){
+    Route::get('/' , 'index');
+    Route::get('/{id}' , 'show');
 });

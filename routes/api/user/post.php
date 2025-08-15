@@ -8,7 +8,7 @@ Route::prefix('posts')->controller(\App\Http\Controllers\Api\User\PostController
     Route::get('/my-posts','myPosts');
 });
 
-Route::apiResource('posts',\App\Http\Controllers\Api\User\PostController::class)->except('update','index');
+Route::apiResource('posts',\App\Http\Controllers\Api\User\PostController::class)->except('update','index','show');
 
 
 

@@ -6,7 +6,7 @@
             <option v-for="category in categories" 
                     :key="category.id" 
                     :value="category.id">
-                {{selectedCategoryName}}
+                {{category.name}}
             </option>
         </select>
         <select name="tags[]" id="" v-model="form.tags" multiple>
@@ -128,13 +128,6 @@ export default {
         {
             const urlFromCover =   '/file/'+ this.form.cover
             this.imgUrl = urlFromCover
-        }
-    },
-    computed:{
-        selectedCategoryName() {
-            const cat = this.categories.find(c => c.id === this.form.category_id)
-
-            return cat ? cat.name : ''
         }
     },
     watch:{

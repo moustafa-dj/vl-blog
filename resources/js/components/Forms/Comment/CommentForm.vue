@@ -37,7 +37,7 @@ import { authStore } from '../../../stores/authStore';
 
                 console.log(commentdata);
                 try{
-                    const res = await axios.post('api/v1/user/comments',commentdata,{
+                    const res = await axios.post('/api/v1/user/comments',commentdata,{
                         headers:{
                             'Authorization': `Bearer ${authStore.getAuthorization()}`,
                         }
