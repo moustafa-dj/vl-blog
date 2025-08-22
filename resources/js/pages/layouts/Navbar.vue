@@ -8,7 +8,9 @@
                     <li><router-link :to="{name:'add-post'}" v-if="isAuthenticated">Add Post</router-link></li>
                 </ul>
                 <div class="search">
-                    <input type="search" placeholder="...search" v-model="searchStore.search">
+                    <form action="" @submit.prevent="search">
+                        <input type="search" placeholder="...search" v-model="searchQuery">
+                    </form>
                 </div>
                 <router-link to="/" @click.prevent="logout" v-if="isAuthenticated">Logout</router-link>
                 <router-link to="/login" v-else >Login</router-link>
@@ -19,18 +21,17 @@
 <script>
     import axios from 'axios';
     import { authStore } from '../../stores/authStore';
-    import { searchStore } from '../../stores/searchStore';
     export default {
 
         data(){
             return {
-                searchStore,
+                searchQuery:null
             }
 
         },
         methods: {
             async logout(){
-                const $res = await axios.post('/api/v1/user/logout',{},{
+                const res = await axios.post('/api/v1/user/logout',{},{
                     headers:{
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
                         "Content-Type":"application/json"
@@ -40,9 +41,13 @@
                     authStore.logout()
                     this.$router.push({name:"home"})
                 }).catch((rej)=>{
-                    console.log(rej.response.data);
+                    console.log(res.response.data);
                 })
             },
+
+            search() {
+                this.$router.push({ name: 'search', query: { q: this.searchQuery } })
+            }
         },
 
         computed:{

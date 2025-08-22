@@ -6,7 +6,7 @@
         <div class="post-header">
             <h5>
                 <router-link :to="{name:'post-details',params:{'id':post.id}}">
-                    {{ post.title }} / read more...
+                    {{ post.title }}
                 </router-link>
             </h5>
             <router-link :to="{name:'edit-post' ,params:{'id': post.id}}" 
@@ -26,6 +26,21 @@
         <p>
             {{shortenContent}}
         </p>
+        <div class="tags">
+            <span v-for=" tag in post.tags" :key="tag.id">
+                #{{ tag.name }}
+            </span>
+        </div>
+        <div class="stats">
+            <p>
+                <router-link :to="{name:'post-details',params:{'id':post.id}}">
+                    <span>
+                        💬
+                    </span>
+                    {{ post.comments.length }}
+                </router-link>
+            </p>
+        </div>
     </div>
 </template>
 <script>
@@ -146,7 +161,7 @@ export default {
         transition: background-color 0.2s ease, color 0.2s ease;
     }
 
-    .edit-link:hover {
+    .edit-link:hover ,.delete-btn:hover{
         background-color: #e0e7ff;
         color: #1e3a8a;
     }
@@ -159,6 +174,37 @@ export default {
         text-decoration: none;
         transition: background-color 0.2s ease, color 0.2s ease;
         cursor: pointer;
+    }
+    .tags{
+        margin-top: 10px;
+        padding: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px; /* consistent spacing between posts */
+        justify-content: flex-start; /* align posts to the left */
+    }
+    .tags span{
+        border-radius: 15%;
+        padding: 8px;
+        border: 1px solid rgba(77, 96, 138, 0.21);
+        font-size: 13px;
+    }
+
+
+
+    .stats{
+        margin-top: 10px;
+        padding: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px; /* consistent spacing between posts */
+        justify-content: flex-start; /* align posts to the left */
+    }
+    .stats span{
+        border-radius: 15%;
+        padding: 8px;
+        font-size: 20px;
+        vertical-align: middle;
     }
 
 </style>

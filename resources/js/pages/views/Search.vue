@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="content" v-if="postList.length">
-            <Post v-for="post in postList" :key="post.id" :post="post" @delete-post="getPostsList"/>
+            <Post v-for="post in postList" :key="post.id" :post="post"/>
         </div>
         <div v-else>
             <h4>No poasts available</h4>
@@ -10,8 +10,7 @@
 </template>
 <script>
 import axios from 'axios';
-import Post from '../../../components/Post.vue';
-import { authStore } from '../../../stores/authStore';
+import Post from '../../components/Post.vue';
 export default {
 
     components:{Post},
@@ -19,28 +18,34 @@ export default {
     data() {
         return {
             postList : [],
-            authStore,
         }
     },
-    mounted(){
-        this.getPostsList()
-    },
-    methods:{
-        async getPostsList(){
 
-            const res = await axios.get('api/v1/user/posts',{
-                headers:{
-                    'Authorization': `Bearer ${authStore.getAuthorization()}`,
-                    "Content-Type":"application/json"
-                },
+    methods:{
+        async filterPosts(){
+            const res = await axios.get('/api/v1/user/posts',{
+                params:{
+                    search: this.$route.query?.q
+                }
             })
             .then((res)=>{
                 this.postList = res.data.records
             }).catch((error)=>{
                 console.log(error.response.data)
             })
+        }
+    },
 
+    watch:{
+        '$route.query.q':{
+            handler(){
+                this.filterPosts()
+            },
+            immediate: true
         },
+    },
+    mounted(){
+        
     }
 }
 </script>
