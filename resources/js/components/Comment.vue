@@ -1,7 +1,7 @@
 <template>
   <div class="comment-item">
       <div class="comment-header">
-        <span class="comment-user">{{ comment.user.name }}</span>
+        <span class="comment-user">{{ comment.user?.name }}</span>
       </div>
       <div class="comment-body">
         <p class="comment-content">{{ comment.content }}</p>

@@ -36,4 +36,15 @@ class FileUploadService{
         }
         return $model;
     }
+
+    public function uploadAndGetPath($file ,$directory)
+    {
+        $uploadable = null;
+
+        if($file instanceof UploadedFile){
+            $uploadable = $file->store($directory);
+        }
+
+        return $uploadable;
+    }
 }

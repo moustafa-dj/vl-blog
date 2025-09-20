@@ -14,6 +14,7 @@
                 </div>
                 <router-link to="/" @click.prevent="logout" v-if="isAuthenticated">Logout</router-link>
                 <router-link to="/login" v-else >Login</router-link>
+                <router-link to="/register" v-if="!isAuthenticated">Register</router-link>
             </div>
         </div>
     </div>
@@ -40,7 +41,7 @@
                 .then((res)=>{
                     authStore.logout()
                     this.$router.push({name:"home"})
-                }).catch((rej)=>{
+                }).catch((res)=>{
                     console.log(res.response.data);
                 })
             },

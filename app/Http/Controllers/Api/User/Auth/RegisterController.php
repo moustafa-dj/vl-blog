@@ -19,7 +19,8 @@ class RegisterController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:256',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|max:24|confirmed'
+            'password' => 'required|string|min:8|max:24|confirmed',
+            'profile' => 'nullable|file|mimes:png,jpg,jpeg'
         ]);
 
         $user = $this->user->create($data);
