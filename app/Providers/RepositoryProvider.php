@@ -16,6 +16,7 @@ class RepositoryProvider extends ServiceProvider
         \App\Contracts\PostContract::class => \App\Repositories\PostRepository::class,
         \App\Contracts\CommentContract::class => \App\Repositories\CommentRepository::class,
         \App\Contracts\TagContract::class => \App\Repositories\TagRepository::class,
+        \App\Contracts\ProfileContract::class => \App\Repositories\ProfileRepository::class,
     ];
 
     public function register(): void

@@ -13,6 +13,7 @@ Route::get('tags' , TagsController::class);
 Route::get('/comments',[CommentController::class , 'index']);
 
 Route::middleware('auth:user-api')->group(function(){
+    include 'profile.php';
     include 'post.php';
     include 'comment.php';
 });

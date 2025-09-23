@@ -21,7 +21,8 @@ const routes = [
     },
 
     {path:'/post/:id',name:'post-details',component:()=>import('../pages/views/Posts/PostDetails.vue')},
-    { path: '/search', name: 'search', component: () => import('../pages/views/Search.vue') }
+    {path: '/search', name: 'search', component: () => import('../pages/views/Search.vue') },
+    {path:'/me',name:'me',component:()=>import('../pages/views/Profile.vue')}
 
 ]
 

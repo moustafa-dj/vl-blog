@@ -26,6 +26,13 @@ class UserRepository extends BaseRepository implements UserContract
             'profile' => $profile ?? ''
         ]);
 
+        $user->profileInfo()->create([
+            'bio' => 'test bio',
+            'nb_following' => 0,
+            'nb_followers' => 0,
+            'social_links'=> []
+        ]);
+
         return $user;
     }
 

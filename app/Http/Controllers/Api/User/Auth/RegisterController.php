@@ -28,7 +28,7 @@ class RegisterController extends Controller
         $access_token = $user->createToken($user->id)->plainTextToken;
 
         return response()->json([
-            'user' => UserResource::make($user),
+            'user' => UserResource::make($user->load('profileInfo')),
             'access_token' => $access_token
         ]);
     }

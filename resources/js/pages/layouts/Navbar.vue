@@ -13,6 +13,7 @@
                     </form>
                 </div>
                 <router-link to="/" @click.prevent="logout" v-if="isAuthenticated">Logout</router-link>
+                <router-link to="/me" v-if="isAuthenticated">profile</router-link>
                 <router-link to="/login" v-else >Login</router-link>
                 <router-link to="/register" v-if="!isAuthenticated">Register</router-link>
             </div>
