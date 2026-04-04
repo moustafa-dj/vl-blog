@@ -13,40 +13,39 @@
         </form>
     </div>
 </template>
-<script>
+<script setup>
 import axios from 'axios';
 import { authStore } from '../../stores/authStore';
 import { useToast } from 'vue-toastification';
+import {ref} from 'vue';
+import { useRoute , useRouter } from 'vue-router';
 
-    export default {
-        data(){
-            return {
-                email:'',
-                password:'',
-            }
-        },
-        methods:{
-            async login() {
-                this.loading = true;
-                this.error = null;
-                const toast = useToast()
-                const response = await axios.post("/api/v1/user/login", {
-                    email: this.email,
-                    password: this.password,
-                }).then((response) =>{
-                    authStore.login(
-                        response.data.token,
-                        response.data.user.id
-                    )
-                    toast.success('login successfull')
-                    this.$router.push({name:"home"});
-                }).catch((error) => {
-                    console.log(error.response.data)
-                    toast.error(error.data)
-                });
-            },
-        }
+const email = ref('')
+const password = ref('');
+const router = useRouter();
+let loading = false;
+let error = null;
+
+async function  login() {
+    loading = true;
+    error = null;
+    const toast = useToast()
+    try{
+        const response = await axios.post("/api/v1/user/login", {
+            email: email.value,
+            password: password.value,
+        })
+        authStore.login(
+            response.data.token,
+            response.data.user.id
+        )
+        toast.success('login successfull')
+        router.push({name:"home"});
+    }catch(error){
+        console.log(error.response.data)
+        toast.error(error.data)
     }
+}
 </script>
 <style>
 .login-form{

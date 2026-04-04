@@ -25,51 +25,49 @@
         </form>
     </div>
 </template>
-<script>
+<script setup>
 import axios from 'axios';
 import { authStore } from '../../stores/authStore';
 import { useToast } from 'vue-toastification';
-    export default {
-        data(){
-            return {
-                user:{
-                    email:'',
-                    password:'',
-                    name:'',
-                    profile:'',
-                    password_confirmation:''
-                },
-                authStore
-            }
-        },
-        methods:{
-            async register() {
-                const toast =  useToast();
-                const userData = new FormData();
-                userData.append('name',this.user.name)
-                userData.append('email' , this.user.email)
-                userData.append('password' , this.user.password)
-                userData.append('profile',this.user.profile)
-                userData.append('password_confirmation' , this.user.password_confirmation)
+import { ref } from 'vue';
+import { useRoute , useRouter} from 'vue-router';
 
-                const res = await axios.post('/api/v1/user/register',userData)
-                            .then((response) => {
-                                authStore.login(
-                                    response.data.access_token,
-                                    response.data.user.id
-                                )
-                                toast.success('register successfull')
-                                this.$router.push({name:"home"});
-                            }).catch((error) => {
-                                console.log(error.response.data)
-                                toast.error(error.data)
-                            });
-            },
-            uploadCover(event){
-                this.user.profile = event.target.files[0]
-            }
-        }
+const user = ref({
+    email:'',
+    password:'',
+    name:'',
+    profile:'',
+    password_confirmation:''
+})
+const router = useRouter();
+
+async function register() {
+    const toast =  useToast();
+    const userData = new FormData();
+    userData.append('name',user.value.name)
+    userData.append('email' , user.value.email)
+    userData.append('password' , user.value.password)
+    userData.append('profile',user.value.profile)
+    userData.append('password_confirmation' , user.value.password_confirmation)
+
+    try{
+        const response = await axios.post('/api/v1/user/register',userData)
+        authStore.login(
+            response.data.access_token,
+            response.data.user.id
+        )
+        toast.success('register successfull')
+        router.push({name:"home"});
+    }catch(error){
+        console.log(error.response.data)
+        toast.error(error.data)
     }
+
+
+}
+function uploadCover(event){
+    user.value.profile = event.target.files[0]
+}
 </script>
 <style>
 .login-form{
