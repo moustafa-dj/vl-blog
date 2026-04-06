@@ -9,7 +9,7 @@
                 </ul>
                 <div class="search">
                     <form action="" @submit.prevent="search">
-                        <input type="search" placeholder="...search" v-model="searchQuery">
+                        <input type="search" placeholder="...search" v-model="searchQ.searchQuery">
                     </form>
                 </div>
                 <router-link to="/" @click.prevent="logout" v-if="isAuthenticated">Logout</router-link>
@@ -20,46 +20,39 @@
         </div>
     </div>
 </template>
-<script>
+<script setup>
     import axios from 'axios';
     import { authStore } from '../../stores/authStore';
-    export default {
+    import { computed, reactive } from 'vue';
+    import { useRouter } from 'vue-router';
 
-        data(){
-            return {
-                searchQuery:null
-            }
+    const searchQ = reactive({ searchQuery:null});
 
-        },
-        methods: {
-            async logout(){
-                const res = await axios.post('/api/v1/user/logout',{},{
-                    headers:{
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                        "Content-Type":"application/json"
-                    }
-                })
-                .then((res)=>{
-                    authStore.logout()
-                    this.$router.push({name:"home"})
-                }).catch((res)=>{
-                    console.log(res.response.data);
-                })
-            },
+    const router = useRouter();
 
-            search() {
-                this.$router.push({ name: 'search', query: { q: this.searchQuery } })
-            }
-        },
+    async function logout(){
 
-        computed:{
-            isAuthenticated()
-            {
-                  return authStore.auth
-            }
+        try{
+            await axios.post('/api/v1/user/logout',{},{
+                headers:{
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    "Content-Type":"application/json"
+                }
+            })
+            authStore.logout()
+            router.push({name:"home"})
+        }catch(error){
+            console.log(res.response.data);
         }
-
     }
+
+    function search() {
+        router.push({ name: 'search', query: { q: searchQ.searchQuery } })
+    }
+
+    const isAuthenticated = computed (()=>{
+        return authStore.auth
+    })
 </script>
 <style>
 .container{

@@ -3,10 +3,6 @@
         <AddForm/>
     </div>
 </template>
-<script>
+<script setup>
 import AddForm from '../../../components/Forms/Post/AddForm.vue';
-export default{
-
-    components:{AddForm}
-}
 </script>

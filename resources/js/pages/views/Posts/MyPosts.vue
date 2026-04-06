@@ -6,41 +6,34 @@
         <Post v-for="post in postList" :key="post.id" :post="post"/>
     </div>
 </template>
-<script>
+<script setup>
 import axios from 'axios';
 import Post from '../../../components/Post.vue';
 import { authStore } from '../../../stores/authStore';
-export default {
+import { onMounted, reactive } from 'vue';
+import { ref } from 'vue';
 
-    components:{Post},
+    const postList = ref()
 
-    data() {
-        return {
-            postList : [],
-            authStore
-        }
-    },
-    mounted(){
-        this.getPostsList()
-    },
-    methods:{
-        async getPostsList(){
+    onMounted(() => {
+        getPostsList()
+    })
 
+    async function getPostsList(){
+
+        try{
             const res = await axios.get('api/v1/user/posts/my-posts',{
                 headers:{
                     'Authorization': `Bearer ${authStore.getAuthorization()}`,
                     "Content-Type":"application/json"
                 }
             })
-            .then((res)=>{
-                this.postList = res.data.records
-            }).catch((error)=>{
-                console.log(error.response.data)
-            })
 
-        },
+            postList.value = res.data.records
+        }catch(error){
+            console.log(error.response.data)
+        }
     }
-}
 </script>
 <style>
     .content {
