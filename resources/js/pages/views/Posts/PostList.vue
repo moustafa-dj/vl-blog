@@ -8,41 +8,33 @@
         </div>
     </div>
 </template>
-<script>
+<script setup>
 import axios from 'axios';
 import Post from '../../../components/Post.vue';
 import { authStore } from '../../../stores/authStore';
-export default {
+import { ref , onMounted} from 'vue';
 
-    components:{Post},
+    const postList = ref([]);
 
-    data() {
-        return {
-            postList : [],
-            authStore,
-        }
-    },
-    mounted(){
-        this.getPostsList()
-    },
-    methods:{
-        async getPostsList(){
 
+    onMounted(()=>{
+        getPostsList()
+    })
+
+    async function getPostsList(){
+
+        try{
             const res = await axios.get('api/v1/user/posts',{
                 headers:{
                     'Authorization': `Bearer ${authStore.getAuthorization()}`,
                     "Content-Type":"application/json"
                 },
             })
-            .then((res)=>{
-                this.postList = res.data.records
-            }).catch((error)=>{
+            postList.value = res.data.records
+        }catch(error){
                 console.log(error.response.data)
-            })
-
-        },
+        }
     }
-}
 </script>
 <style scoped>
 .container {

@@ -65,32 +65,32 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import axios from "axios";
 import { authStore } from "../../../stores/authStore";
 import Comment from "../../../components/Comment.vue";
 import CommentForm from "../../../components/Forms/Comment/CommentForm.vue";
+import { computed } from "vue";
+import { useRouter , useRoute } from "vue-router";
+import { ref, onMounted } from 'vue';
 
-export default {
-  components: { Comment, CommentForm },
-  data() {
-    return {
-      post: null,
-      commentList: [],
-      authStore,
-    };
-  },
-  mounted() {
-    this.getPost();
-  },
-  methods: {
-    getImgUrl(cover) {
+  const post = ref();
+  const commentList = ref([]);
+  const router = useRouter();
+  const route = useRoute();
+
+    onMounted(()=>{
+      getPost()
+    })
+
+    function getImgUrl(cover) {
       return "/file/" + cover;
-    },
-    async getPost() {
+    }
+
+    async function getPost() {
       try {
         const res = await axios.get(
-          "/api/v1/user/posts/" + this.$route.params.id,
+          "/api/v1/user/posts/" + route.params.id,
           {
             headers: {
               Authorization: `Bearer ${authStore.getAuthorization()}`,
@@ -98,42 +98,38 @@ export default {
             },
           }
         );
-        this.post = res.data.record;
-        this.getComments();
+        post.value = res.data.record;
+        getComments()
       } catch (error) {
-        console.error(error);
+        console.error(error.response.data);
       }
-    },
-    async getComments() {
+    }
+    async function getComments() {
       try {
         const res = await axios.get("/api/v1/user/comments", {
-          params: { post_id: this.post.id },
+          params: { post_id: post.value.id },
         });
-        this.commentList = res.data.records;
+        commentList.value = res.data.records;
       } catch (error) {
-        console.error(error);
+        console.error(error.response.data);
       }
-    },
-    async deletePost() {
+    }
+    async function deletePost() {
       try {
-        await axios.delete(`/api/v1/user/posts/${this.post.id}`, {
+        await axios.delete(`/api/v1/user/posts/${post.id}`, {
           headers: {
             Authorization: `Bearer ${authStore.getAuthorization()}`,
             "Content-Type": "application/json",
           },
         });
-        this.$router.push({ name: "home" });
+        router.push({ name: "home" });
       } catch (error) {
         console.error(error);
       }
-    },
-  },
-  computed:{
-    isAuthenticated(){
-        return authStore.auth
     }
-  }
-};
+    const isAuthenticated = computed(()=>{
+      return authStore.auth
+    })
 </script>
 
 <style scoped>

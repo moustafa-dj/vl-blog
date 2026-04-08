@@ -40,39 +40,34 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import axios from 'axios';
 import { authStore } from '../../stores/authStore';
+import { ref , onMounted} from 'vue';
 
-export default {
-  data() {
-    return {
-      profile: null,
-    }
-  },
-  methods: {
-    async me(){ 
-        try{
-            const res = await axios.get('/api/v1/user/profiles/me',
-            { 
-                headers:{ 
-                    'Authorization':` Bearer ${authStore.getAuthorization()}`,
-                    "Content-Type":"application/json" 
-                } 
-            })
-            this.profile = res.data.record
-        }catch(error){
-            console.log(error.response.data)
-        }
-    },
-    getImgUrl(cover) {
-      return "/file/" + cover;
-    },
-  },
-  mounted() {
-    this.me();
-  },
-};
+  const profile = ref();
+
+  async function me(){ 
+      try{
+          const res = await axios.get('/api/v1/user/profiles/me',
+          { 
+              headers:{ 
+                  'Authorization':` Bearer ${authStore.getAuthorization()}`,
+                  "Content-Type":"application/json" 
+              } 
+          })
+          profile.value = res.data.record
+      }catch(error){
+          console.log(error.response.data)
+      }
+  }
+  function getImgUrl(cover) {
+    return "/file/" + cover;
+  }
+
+  onMounted( () => {
+    me();
+  })
 </script>
 
 <style scoped>
