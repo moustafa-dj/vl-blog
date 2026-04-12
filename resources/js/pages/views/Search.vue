@@ -32,43 +32,33 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import axios from "axios";
 import Post from "../../components/Post.vue";
+import { ref ,watch } from "vue";
 
-export default {
-  components: { Post },
+import { useRoute , useRouter } from "vue-router";
 
-  data() {
-    return {
-      postList: [],
-    };
-  },
+  const postList = ref([])
+  const route = useRoute()
 
-  methods: {
-    async filterPosts() {
-      await axios
-        .get("/api/v1/user/posts", {
-          params: { search: this.$route.query?.q },
-        })
-        .then((res) => {
-          this.postList = res.data.records;
-        })
-        .catch((error) => {
-          console.log(error.response.data);
-        });
+  async function filterPosts() {
+    try{
+      const res = await axios.get("/api/v1/user/posts", {
+        params: { search: route.query?.q },
+      })
+      postList.value = res.data.records;
+    }catch(error){
+      console.log(error.response.data);
+    }
+  }
+  watch(() => route.query.q , 
+    () => {
+      filterPosts()
     },
-  },
+    {immediate: true}
+  )
 
-  watch: {
-    "$route.query.q": {
-      handler() {
-        this.filterPosts();
-      },
-      immediate: true,
-    },
-  },
-};
 </script>
 
 <style scoped>

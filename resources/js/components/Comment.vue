@@ -9,19 +9,8 @@
   </div>
 </template>
 
-<script>
-export default {
-
-    props:['comment'],
-    data(){
-        return {
-        }
-    },
-
-    methods: {
-    },
-
-}
+<script setup>
+  const props = defineProps(['comment'])
 </script>
 <style>
 

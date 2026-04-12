@@ -32,7 +32,7 @@ import { ref , onMounted} from 'vue';
             })
             postList.value = res.data.records
         }catch(error){
-                console.log(error.response.data)
+            console.log(error.response.data)
         }
     }
 </script>

@@ -43,60 +43,57 @@
         </div>
     </div>
 </template>
-<script>
+<script setup>
 import axios from 'axios';
 import { authStore } from '../stores/authStore';
+import { ref } from 'vue';
+import { computed } from 'vue';
 
-export default {
-    props: [
-        'post',
-    ],
-    emits:[
-        'delete-post'
-    ],
-    data(){
-        return {
-            commentList:[],
-            authStore
+    const props = defineProps({
+        post: {
+            type: Object,
+            required: true
         }
-    },
+    })
 
-    computed:{
-        isAuthenticated (){
-            return authStore.auth
-        },
-        userId(){
-            return authStore.userId
-        },
-        shortenContent(){
-            return this.post.content.substr(0,30) + '...'
-        }
-    },
-    methods:{
-        getImgUrl(cover)
-        {
-            return 'file/'+cover
-        },
+    const commentList = ref([])
+
+    const emits = defineEmits(['delete-post'])
+
+
+    const isAuthenticated = computed(()=>{
+        return authStore.auth
+    })
+
+    const userId = computed(()=>{
+        return authStore.user
+    })
+    const shortenContent = computed(()=>{
+        return props.post.content.substr(0.30) + '...'
+    })
+
+    function getImgUrl(cover)
+    {
+        return 'file/'+cover
+    }
     
-        async deletePost()
+    async function deletePost()
+    {
+        try{
+            const res = await axios.delete('/api/v1/user/posts/'+props.post.id,{
+                headers:{
+                    'Authorization': `Bearer ${authStore.getAuthorization()}`,
+                    "Content-Type":"application/json"
+                },
+            })
+
+            emits('delete-post')
+
+        }catch(error)
         {
-            try{
-                const res = await axios.delete('/api/v1/user/posts/'+this.post.id,{
-                    headers:{
-                        'Authorization': `Bearer ${authStore.getAuthorization()}`,
-                        "Content-Type":"application/json"
-                    },
-                })
-
-                this.$emit('delete-post')
-
-            }catch(error)
-            {
-
-            }
+            console.log(error.response.data)
         }
-    },
-}
+    }
 </script>
 <style>
     .post {

@@ -14,43 +14,43 @@
     </button>
   </form>
 </template>
-<script>
-import axios from 'axios';
-import { authStore } from '../../../stores/authStore';
+<script setup>
+  import axios from 'axios';
+  import { authStore } from '../../../stores/authStore';
+  import { ref } from 'vue';
 
-    export default {
-        props:['post'],
-        emits : ['commentAdded'],
-        data(){
-            return {
-                content:'',
-                authStore
-            }
-        },
-        methods:{
-            async addComent()
-            {
-                const commentdata = {
-                    post_id: this.post.id,
-                    content: this.content
-                }
-
-                console.log(commentdata);
-                try{
-                    const res = await axios.post('/api/v1/user/comments',commentdata,{
-                        headers:{
-                            'Authorization': `Bearer ${authStore.getAuthorization()}`,
-                        }
-                    })
-                    this.content=''
-                    this.$emit('commentAdded')
-                }catch(error){
-                    console.log(error.response.data)
-                }
-
-            },
-        }
+  const props = defineProps({
+    post:{
+      type: Object,
+      required: true
     }
+  })
+
+  const emits = defineEmits(['commentAdded'])
+
+  const content = ref('');
+
+  async function addComent()
+  {
+      const commentdata = {
+          post_id: props.post.id,
+          content: content.value
+      }
+
+      console.log(commentdata);
+      try{
+          const res = await axios.post('/api/v1/user/comments',commentdata,{
+              headers:{
+                  'Authorization': `Bearer ${authStore.getAuthorization()}`,
+              }
+          })
+          content.value = ''
+          emits('commentAdded')
+      }catch(error){
+          console.log(error.response.data)
+      }
+
+  }
 </script>
 <style>
   .comment-form {
