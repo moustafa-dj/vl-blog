@@ -17,87 +17,82 @@
     </form>
 </template>
 
-<script>
+<script setup>
 import axios from 'axios';
 import { authStore } from '../../../stores/authStore';
 import { useToast } from 'vue-toastification';
-export default {
-    data(){
-        return {
-            post:{
-                title:null,
-                content:null,
-                cover:null,
-                category_id:null,
-                tags:[]
-            },
-            categories:[],
-            tagsList:[],
-            errors:[],
-            authStore
-        }
-    },
-    mounted(){
-        this.getCategoyList(),
-        this.getTagsList()
-    },
-    methods:{
-        async getCategoyList()
-        {
-            const res = await axios.get('/api/v1/user/categories',{
+import { onMounted, ref } from 'vue';
+    
+    const post = ref({
+        title:null,
+        content:null,
+        cover:null,
+        category_id:null,
+        tags:[]
+    })
+
+    const categories = ref([])
+    const tagsList = ref([])
+    const errors = ref([])
+
+    onMounted(()=>{
+        getCategoyList(),
+        getTagsList()
+    })
+    async function getCategoyList()
+    {
+        const res = await axios.get('/api/v1/user/categories',{
+            headers:{
+                'Authorization': `Bearer ${authStore.getAuthorization()}`,
+                "Content-Type":"application/json"
+            }
+        }).then((res) => {
+            categories.value = res.data.records
+
+        }).catch((error)=>{
+            console.log(error.response.data)
+        })
+    }
+    async function addPost(){
+        const toast =  useToast();
+        const postData = new FormData();
+        postData.append('cover',post.value.cover)
+        postData.append('title',post.value.title)
+        postData.append('content',post.value.content)
+        postData.append('category_id',post.value.category_id)
+        post.value.tags.forEach((e , i) => {
+            postData.append(`tags[${i}]`,e)
+        })
+
+        const res = await axios.post('/api/v1/user/posts',
+            postData,{
+            headers:{
+                'Authorization': `Bearer ${authStore.getAuthorization()}`,
+            }
+        },
+        toast.success('Post added successfully')
+        ).catch((error)=>{
+            console.log(this.errors)
+            console.log(error.response)
+        })
+    }
+    
+    async function  getTagsList(){
+        try{
+            const res = await axios.get('api/v1/user/tags',{
                 headers:{
                     'Authorization': `Bearer ${authStore.getAuthorization()}`,
                     "Content-Type":"application/json"
                 }
-            }).then((res) => {
-                this.categories = res.data.records
-
-            }).catch((error)=>{
-                console.log(error.response.data)
             })
-        },
-        async addPost(){
-            const toast =  useToast();
-            const postData = new FormData();
-            postData.append('cover',this.post.cover)
-            postData.append('title',this.post.title)
-            postData.append('content',this.post.content)
-            postData.append('category_id',this.post.category_id)
-            this.post.tags.forEach((e , i) => {
-                postData.append(`tags[${i}]`,e)
-            })
-
-            const res = await axios.post('/api/v1/user/posts',
-                postData,{
-                headers:{
-                    'Authorization': `Bearer ${authStore.getAuthorization()}`,
-                }
-            },
-            toast.success('Post added successfully')
-            ).catch((error)=>{
-                console.log(this.errors)
-                console.log(error.response)
-            })
-        },
-        async getTagsList(){
-            try{
-                const res = await axios.get('api/v1/user/tags',{
-                    headers:{
-                        'Authorization': `Bearer ${authStore.getAuthorization()}`,
-                        "Content-Type":"application/json"
-                    }
-                })
-                this.tagsList = res.data.records
-            }catch(error){
-                console.log(error.response.data)
-            }
-        },
-        uploadCover(event){
-            this.post.cover = event.target.files[0]
+            tagsList.value = res.data.records
+        }catch(error){
+            console.log(error.response.data)
         }
-
     }
-}
+    function uploadCover(event){
+        post.value.cover = event.target.files[0]
+    }
 </script>
 <style scoped>
     .post-form {

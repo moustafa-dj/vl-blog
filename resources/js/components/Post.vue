@@ -65,9 +65,11 @@ import { computed } from 'vue';
         return authStore.auth
     })
 
+
     const userId = computed(()=>{
-        return authStore.user
+        return authStore.getUserId()
     })
+
     const shortenContent = computed(()=>{
         return props.post.content.substr(0.30) + '...'
     })

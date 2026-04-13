@@ -26,125 +26,124 @@
         <button type="submit">Update</button>
     </form>
 </template>
-<script>
+<script setup>
 import { authStore } from '../../../stores/authStore';
 import { useToast } from 'vue-toastification';
+import { useRoute , useRouter } from 'vue-router';
+import { ref ,watch , onMounted} from 'vue';
 
-export default {
+    const route = useRoute()
 
-    data(){
-        return {
-            form:{
-                title:null,
-                content:null,
-                cover:null,
-                category_id:null,
-                tags:[]
-            },
-            categories:[],
-            tagsList:[],
-            imgUrl:null
+    const form = ref({
+        title:null,
+        content:null,
+        cover:null,
+        category_id:null,
+        tags:[]
+    })
+
+    const categories = ref([])
+    const tagsList = ref([])
+    const imgUrl = ref()
+
+    async function getPost(){
+        try{
+
+            const res = await  axios.get('/api/v1/user/posts/'+route.params.id,{
+                headers:{
+                    'Authorization': `Bearer ${authStore.getAuthorization()}`,
+                    "Content-Type":"application/json"
+                },
+            })
+            console.log(res.data.record)
+            setForm(res.data.record)
+
+            
+        }catch(error){
+            console.log(error)
         }
-    },
-    methods:{
-        async getPost(){
-            try{
+    }
+    async function getCategoyList()
+    {
+        const res = await axios.get('/api/v1/user/categories'
+        ).then((res) => {
+            categories.value = res.data.records
+        }).catch((error)=>{
+            console.log(error.response.data)
+        })
+    }
 
-                const res = await  axios.get('/api/v1/user/posts/'+this.$route.params.id,{
+    async function getTagsList(){
+        try{
+            const res = await axios.get('/api/v1/user/tags')
+            tagsList.value = res.data.records
+        }catch(error){
+            console.log(error.response.data)
+        }
+    }
+
+    function setForm(post) {
+        form.value = {
+            title: post.title,
+            content: post.content,
+            cover: post.cover,
+            category_id: post.category.id,
+            tags: post.tags.map(tag => tag.id)
+        }
+        cover()
+    }
+    async function updatePost(){
+        const toast = useToast()
+        try{
+            const postData = new FormData()
+            postData.append('title',form.value.title)
+            if(form.cover instanceof File) {
+                postData.append('cover', form.value.cover)
+            }
+            postData.append('content',form.value.content),
+            postData.append('category_id',form.value.category_id)
+            form.value.tags.forEach((e , i) =>{
+                postData.append(`tags[${i}]`,e)
+            })
+
+            const res = await  axios.post('/api/v1/user/posts/'+route.params.id,
+                postData,
+                {
                     headers:{
                         'Authorization': `Bearer ${authStore.getAuthorization()}`,
-                        "Content-Type":"application/json"
                     },
-                })
-                this.setForm(res.data.record)
-            }catch(error){
-                console.log(error)
-            }
-        },
-        async getCategoyList()
-        {
-            const res = await axios.get('/api/v1/user/categories'
-            ).then((res) => {
-                this.categories = res.data.records
-            }).catch((error)=>{
-                console.log(error.response.data)
-            })
-        },
-
-        async getTagsList(){
-            try{
-                const res = await axios.get('/api/v1/user/tags')
-                this.tagsList = res.data.records
-            }catch(error){
-                console.log(error.response.data)
-            }
-        },
-
-        setForm(post) {
-            this.form = {
-                title: post.title,
-                content: post.content,
-                cover: post.cover,
-                category_id: post.category.id,
-                tags: post.tags.map(tag => tag.id)
-            }
-            this.cover()
-        },
-        async updatePost(){
-            const toast = useToast()
-            try{
-                const postData = new FormData()
-                postData.append('title',this.form.title)
-                if(this.form.cover instanceof File) {
-                    postData.append('cover', this.form.cover)
                 }
-                postData.append('content',this.form.content),
-                postData.append('category_id',this.form.category_id)
-                this.form.tags.forEach((e , i) =>{
-                    postData.append(`tags[${i}]`,e)
-                })
-
-                const res = await  axios.post('/api/v1/user/posts/'+this.$route.params.id,
-                    postData,
-                    {
-                        headers:{
-                            'Authorization': `Bearer ${authStore.getAuthorization()}`,
-                        },
-                    }
-                )
-                toast.success('post updated successfully')
-            }catch(error){
-                toast.error(error.data)
-                console.log(error)
-            }
-        },
-        uploadCover(event){
-            const file = event.target.files[0]
-            this.form.cover = file
-            this.imgUrl = URL.createObjectURL(file)
-        },
-
-        cover()
-        {
-            const urlFromCover =   '/file/'+ this.form.cover
-            this.imgUrl = urlFromCover
+            )
+            toast.success('post updated successfully')
+        }catch(error){
+            toast.error(error.data)
+            console.log(error)
         }
-    },
-    watch:{
-        '$router.params.id'(){
-            setImmediate(true)
-            handler()
-            {
-                this.getPost()
-            }
-        }
-    },
-    mounted(){
-        this.getCategoyList(),
-        this.getTagsList(),
-        this.getPost()
     }
-}
+    function uploadCover(event){
+        const file = event.target.files[0]
+        form.value.cover = file
+        imgUrlvalue = URL.createObjectURL(file)
+    }
+
+    function cover()
+    {
+        const urlFromCover =   '/file/'+ form.value.cover
+        imgUrl.value = urlFromCover
+    }
+watch(() => route.params.id ,
+    () => {
+        getPost()
+    },
+    {imediat:true}
+)
+
+    onMounted(() => {
+        getCategoyList(),
+        getTagsList(),
+        getPost()
+    })
+
 </script>
 <style scoped>
     .post-form {
