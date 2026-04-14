@@ -16,20 +16,19 @@
 <script setup>
 import axios from 'axios';
 import { authStore } from '../../stores/authStore';
-import { useToast } from 'vue-toastification';
 import {ref} from 'vue';
 import { useRoute , useRouter } from 'vue-router';
-
+import { useToast } from '../../Composables/useToast';
 const email = ref('')
 const password = ref('');
 const router = useRouter();
 let loading = false;
 let error = null;
+const toast = useToast()
 
 async function  login() {
     loading = true;
     error = null;
-    const toast = useToast()
     try{
         const response = await axios.post("/api/v1/user/login", {
             email: email.value,
@@ -39,7 +38,8 @@ async function  login() {
             response.data.token,
             response.data.user.id
         )
-        toast.success('login successfull')
+
+        toast.success('login sucess')
         router.push({name:"home"});
     }catch(error){
         console.log(error.response.data)

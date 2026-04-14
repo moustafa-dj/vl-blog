@@ -28,7 +28,7 @@
 <script setup>
 import axios from 'axios';
 import { authStore } from '../../stores/authStore';
-import { useToast } from 'vue-toastification';
+import { useToast } from '../../Composables/useToast';
 import { ref } from 'vue';
 import { useRoute , useRouter} from 'vue-router';
 
@@ -39,10 +39,10 @@ const user = ref({
     profile:'',
     password_confirmation:''
 })
+const toast =  useToast();
 const router = useRouter();
 
 async function register() {
-    const toast =  useToast();
     const userData = new FormData();
     userData.append('name',user.value.name)
     userData.append('email' , user.value.email)

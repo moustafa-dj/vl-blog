@@ -73,7 +73,9 @@ import CommentForm from "../../../components/Forms/Comment/CommentForm.vue";
 import { computed } from "vue";
 import { useRouter , useRoute } from "vue-router";
 import { ref, onMounted } from 'vue';
+import { useToast } from "../../../Composables/useToast";
 
+  const toast = useToast()
   const post = ref();
   const commentList = ref([]);
   const router = useRouter();
@@ -122,6 +124,7 @@ import { ref, onMounted } from 'vue';
             "Content-Type": "application/json",
           },
         });
+        toast.success('post deleted successfully');
         router.push({ name: "home" });
       } catch (error) {
         console.error(error);

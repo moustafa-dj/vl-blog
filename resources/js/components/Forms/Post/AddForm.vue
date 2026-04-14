@@ -20,7 +20,7 @@
 <script setup>
 import axios from 'axios';
 import { authStore } from '../../../stores/authStore';
-import { useToast } from 'vue-toastification';
+import { useToast } from '../../../Composables/useToast';
 import { onMounted, ref } from 'vue';
     
     const post = ref({
@@ -31,6 +31,7 @@ import { onMounted, ref } from 'vue';
         tags:[]
     })
 
+    const toast =  useToast();
     const categories = ref([])
     const tagsList = ref([])
     const errors = ref([])
@@ -54,7 +55,6 @@ import { onMounted, ref } from 'vue';
         })
     }
     async function addPost(){
-        const toast =  useToast();
         const postData = new FormData();
         postData.append('cover',post.value.cover)
         postData.append('title',post.value.title)

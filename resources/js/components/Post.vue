@@ -48,6 +48,7 @@ import axios from 'axios';
 import { authStore } from '../stores/authStore';
 import { ref } from 'vue';
 import { computed } from 'vue';
+import { useToast } from '../Composables/useToast';
 
     const props = defineProps({
         post: {
@@ -56,6 +57,7 @@ import { computed } from 'vue';
         }
     })
 
+    const toast = useToast()
     const commentList = ref([])
 
     const emits = defineEmits(['delete-post'])
@@ -90,6 +92,8 @@ import { computed } from 'vue';
             })
 
             emits('delete-post')
+
+            toast.success('post deleted successfully');
 
         }catch(error)
         {

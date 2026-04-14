@@ -28,11 +28,12 @@
 </template>
 <script setup>
 import { authStore } from '../../../stores/authStore';
-import { useToast } from 'vue-toastification';
+import { useToast } from '../../../Composables/useToast';
 import { useRoute , useRouter } from 'vue-router';
 import { ref ,watch , onMounted} from 'vue';
 
     const route = useRoute()
+    const toast = useToast()
 
     const form = ref({
         title:null,
@@ -93,7 +94,6 @@ import { ref ,watch , onMounted} from 'vue';
         cover()
     }
     async function updatePost(){
-        const toast = useToast()
         try{
             const postData = new FormData()
             postData.append('title',form.value.title)
@@ -131,12 +131,12 @@ import { ref ,watch , onMounted} from 'vue';
         const urlFromCover =   '/file/'+ form.value.cover
         imgUrl.value = urlFromCover
     }
-watch(() => route.params.id ,
-    () => {
-        getPost()
-    },
-    {imediat:true}
-)
+    watch(() => route.params.id ,
+        () => {
+            getPost()
+        },
+        {imediat:true}
+    )
 
     onMounted(() => {
         getCategoyList(),

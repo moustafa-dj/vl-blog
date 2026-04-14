@@ -5,19 +5,8 @@ import App from './App.vue'
 import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 import './styles/global.css'
+import 'mosha-vue-toastify/dist/style.css'
 
 createApp(App)
 .use(router)
-.use(
-    Toast, {
-        position: 'top-right',
-        timeout: 3000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        showCloseButtonOnHover: false,
-        hideProgressBar: false,
-        icon: true,
-    }
-)
 .mount('#app')
