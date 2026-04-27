@@ -1,12 +1,20 @@
 <template>
-    <form class="post-form" @submit.prevent="addPost">
-        <input type="text" v-model="post.title">
-        <textarea name="content" id="" v-model="post.content"></textarea>
-        <select name="category_id" id="" v-model="post.category_id">
+    <Form  class="post-form" @submit.prevent="addPost" :validation-schema="PostSchema" v-slot="{errors}">
+        <Field 
+            type="text"
+            v-model="post.title"
+            name="title"
+        >
+        </Field>
+        <ErrorMessage class="text-danger" name="title" />
+        <Field name="content" id="" v-model="post.content" as="textarea"></Field>
+        <ErrorMessage class="text-danger" name="content" />
+        <Field name="category_id" id="" v-model="post.category_id" as="select">
             <option v-for="category in categories" :key="category.id" :value="category.id">
                 {{category.name}}
             </option>
-        </select>
+        </Field>
+        <ErrorMessage class="text-danger" name="category_id" />
         <select name="tags[]" id="" v-model="post.tags" multiple>
             <option v-for="tag in tagsList" :key="tag.id" :value="tag.id">
                 {{tag.name}}
@@ -14,7 +22,7 @@
         </select>
         <input type="file" name="cover" id="" @change="uploadCover">
         <button type="submit">Add</button>
-    </form>
+    </Form>
 </template>
 
 <script setup>
@@ -22,6 +30,8 @@ import axios from 'axios';
 import { authStore } from '../../../stores/authStore';
 import { useToast } from '../../../Composables/useToast';
 import { onMounted, ref } from 'vue';
+import { Form , ErrorMessage , Field , defineRule } from 'vee-validate';
+import { PostSchema } from '../../../Rules/PostSchema';
     
     const post = ref({
         title:null,
@@ -34,7 +44,6 @@ import { onMounted, ref } from 'vue';
     const toast =  useToast();
     const categories = ref([])
     const tagsList = ref([])
-    const errors = ref([])
 
     onMounted(()=>{
         getCategoyList(),
@@ -103,6 +112,7 @@ import { onMounted, ref } from 'vue';
         display: flex;
         flex-direction: column;
         gap: 1.5rem;
+        margin-top: 100px;
     }
 
     .post-form input[type="text"],

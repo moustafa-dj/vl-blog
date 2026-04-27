@@ -1,16 +1,30 @@
-<template>
-    <div class="login-form">
-        <form  method="post">
+<template class="">
+    <div 
+    class="login-form w-full 
+       flex flex-col"
+    >
+        <Form  method="post" @submit="login" :validation-schema="LoginSchema" v-slot="{errors}">
             <label for="">Email</label>
-            <br>
-            <input type="text" placeholder="email adress" name="email" v-model="email">
-            <br>
-            <label for="">Password</label>
-            <br>
-            <input type="password" placeholder="password" name="password" v-model="password">
-            <br>
-            <button @click.prevent="login">Login</button>
-        </form>
+            <Field 
+                type="email"
+                v-model="email"
+                as="input"
+                name="email"
+                class="block bg-gray-300 m-2 p-2"
+            >
+            </Field>
+            <ErrorMessage class="text-danger" name="email" />
+            <Field 
+                type="password"
+                v-model="password"
+                name="password"
+                placeholder="password"
+                class="block bg-gray-300 m-2"
+            >
+            </Field>
+            <ErrorMessage class="text-danger" name="password" />
+            <button>Login</button>
+        </Form>
     </div>
 </template>
 <script setup>
@@ -19,6 +33,9 @@ import { authStore } from '../../stores/authStore';
 import {ref} from 'vue';
 import { useRoute , useRouter } from 'vue-router';
 import { useToast } from '../../Composables/useToast';
+import { Form, Field, ErrorMessage } from 'vee-validate';
+import { LoginSchema } from '../../Rules/LoginSchema';
+
 const email = ref('')
 const password = ref('');
 const router = useRouter();
@@ -43,19 +60,23 @@ async function  login() {
         router.push({name:"home"});
     }catch(error){
         console.log(error.response.data)
-        toast.error(error.data)
+        toast.error('login error')
     }
 }
 </script>
 <style>
 .login-form{
-    padding: 20px;
+    /* max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 100px; */
 }
 .login-form input{
-    margin: 10px 0;
-    border: 1px solid #e5e7eb; /* Light gray border */
-    padding: 8px;
-    background-color: #fff;
+
 }
 
 button{

@@ -9,32 +9,15 @@
     </div>
 </template>
 <script setup>
-import axios from 'axios';
 import Post from '../../../components/Post.vue';
-import { authStore } from '../../../stores/authStore';
 import { ref , onMounted} from 'vue';
+import { usePost } from '../../../Composables/usePost';
 
-    const postList = ref([]);
+    const {postList ,  fetchPosts , error , loading} = usePost()
 
-
-    onMounted(()=>{
-        getPostsList()
+    onMounted(()=>{  
+        fetchPosts()
     })
-
-    async function getPostsList(){
-
-        try{
-            const res = await axios.get('api/v1/user/posts',{
-                headers:{
-                    'Authorization': `Bearer ${authStore.getAuthorization()}`,
-                    "Content-Type":"application/json"
-                },
-            })
-            postList.value = res.data.records
-        }catch(error){
-            console.log(error.response.data)
-        }
-    }
 </script>
 <style scoped>
 .container {
