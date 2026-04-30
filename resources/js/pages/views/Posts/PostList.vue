@@ -1,7 +1,7 @@
 <template>
     <div class="container">
-        <div class="content" v-if="postList.length">
-            <Post v-for="post in postList" :key="post.id" :post="post" @delete-post="getPostsList"/>
+        <div class="content" v-if="data.length">
+            <Post v-for="post in data" :key="post.id" :post="post" @delete-post="getPostsList"/>
         </div>
         <div v-else>
             <h4>No poasts available</h4>
@@ -11,12 +11,16 @@
 <script setup>
 import Post from '../../../components/Post.vue';
 import { ref , onMounted} from 'vue';
-import { usePost } from '../../../Composables/usePost';
+import { useFetch } from '../../../Composables/useFetch';
 
-    const {postList ,  fetchPosts , error , loading} = usePost()
+    // const {postList ,  fetchPosts , error , loading} = usePost()
+    const{data , fetch} = useFetch(
+        'api/v1/user/posts',
+        false
+    )
 
     onMounted(()=>{  
-        fetchPosts()
+        fetch()
     })
 </script>
 <style scoped>

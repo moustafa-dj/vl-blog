@@ -7,33 +7,18 @@
     </div>
 </template>
 <script setup>
-import axios from 'axios';
 import Post from '../../../components/Post.vue';
-import { authStore } from '../../../stores/authStore';
 import { onMounted, reactive } from 'vue';
-import { ref } from 'vue';
+import { useFetch } from '../../../Composables/useFetch';
 
-    const postList = ref()
-
+    const{data: postList , fetch} = useFetch(
+        'api/v1/user/posts/my-posts',
+        true
+    )
     onMounted(() => {
-        getPostsList()
+        fetch()
     })
 
-    async function getPostsList(){
-
-        try{
-            const res = await axios.get('api/v1/user/posts/my-posts',{
-                headers:{
-                    'Authorization': `Bearer ${authStore.getAuthorization()}`,
-                    "Content-Type":"application/json"
-                }
-            })
-
-            postList.value = res.data.records
-        }catch(error){
-            console.log(error.response.data)
-        }
-    }
 </script>
 <style>
     .content {

@@ -101,7 +101,8 @@ import { useToast } from "../../../Composables/useToast";
           }
         );
         post.value = res.data.record;
-        getComments()
+        console.log(res.data.record.comments)
+        commentList.value = res.data.record.comments
       } catch (error) {
         console.error(error.response.data);
       }

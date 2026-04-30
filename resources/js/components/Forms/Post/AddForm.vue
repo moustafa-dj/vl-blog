@@ -1,5 +1,5 @@
 <template>
-    <Form  class="post-form" @submit.prevent="addPost" :validation-schema="PostSchema" v-slot="{errors}">
+    <Form  class="post-form" @submit="createPost" :validation-schema="PostSchema" v-slot="{errors}">
         <Field 
             type="text"
             v-model="post.title"
@@ -21,18 +21,22 @@
             </option>
         </select>
         <input type="file" name="cover" id="" @change="uploadCover">
-        <button type="submit">Add</button>
+        <button type="submit" :disabled="loading">
+            <span v-if="loading">...</span>
+            <span v-else>Add</span>
+        </button>
     </Form>
 </template>
 
 <script setup>
-import axios from 'axios';
-import { authStore } from '../../../stores/authStore';
-import { useToast } from '../../../Composables/useToast';
 import { onMounted, ref } from 'vue';
-import { Form , ErrorMessage , Field , defineRule } from 'vee-validate';
+import { Form , ErrorMessage , Field} from 'vee-validate';
 import { PostSchema } from '../../../Rules/PostSchema';
+import { usePost } from '../../../Composables/usePost';
+import { useFetch } from '../../../Composables/useFetch';
     
+   
+
     const post = ref({
         title:null,
         content:null,
@@ -41,64 +45,22 @@ import { PostSchema } from '../../../Rules/PostSchema';
         tags:[]
     })
 
-    const toast =  useToast();
-    const categories = ref([])
-    const tagsList = ref([])
+    const {createPost , loading} = usePost(post)
+    const{data: categories , fetch: fetchCategories} = useFetch(
+        'api/v1/user/categories',
+        true
+    )
+
+    const{data: tagsList , fetch: fetchTags} = useFetch(
+        'api/v1/user/categories',
+        true
+    )
 
     onMounted(()=>{
-        getCategoyList(),
-        getTagsList()
+        fetchCategories(),
+        fetchTags()
     })
-    async function getCategoyList()
-    {
-        const res = await axios.get('/api/v1/user/categories',{
-            headers:{
-                'Authorization': `Bearer ${authStore.getAuthorization()}`,
-                "Content-Type":"application/json"
-            }
-        }).then((res) => {
-            categories.value = res.data.records
 
-        }).catch((error)=>{
-            console.log(error.response.data)
-        })
-    }
-    async function addPost(){
-        const postData = new FormData();
-        postData.append('cover',post.value.cover)
-        postData.append('title',post.value.title)
-        postData.append('content',post.value.content)
-        postData.append('category_id',post.value.category_id)
-        post.value.tags.forEach((e , i) => {
-            postData.append(`tags[${i}]`,e)
-        })
-
-        const res = await axios.post('/api/v1/user/posts',
-            postData,{
-            headers:{
-                'Authorization': `Bearer ${authStore.getAuthorization()}`,
-            }
-        },
-        toast.success('Post added successfully')
-        ).catch((error)=>{
-            console.log(this.errors)
-            console.log(error.response)
-        })
-    }
-    
-    async function  getTagsList(){
-        try{
-            const res = await axios.get('api/v1/user/tags',{
-                headers:{
-                    'Authorization': `Bearer ${authStore.getAuthorization()}`,
-                    "Content-Type":"application/json"
-                }
-            })
-            tagsList.value = res.data.records
-        }catch(error){
-            console.log(error.response.data)
-        }
-    }
     function uploadCover(event){
         post.value.cover = event.target.files[0]
     }

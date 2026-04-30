@@ -9,3 +9,7 @@ Route::get('/', function () {
 Route::get('file/{path}',[\App\Http\Controllers\FileController::class , 'getFile'])
         ->where('path','.*')
         ->name('file.show');
+
+// routes/web.php
+Route::get('/{any}', fn() => view('welcome'))
+    ->where('any', '^(?!api).*$');

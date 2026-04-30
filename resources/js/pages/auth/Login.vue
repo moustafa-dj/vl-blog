@@ -66,14 +66,14 @@ async function  login() {
 </script>
 <style>
 .login-form{
-    /* max-width: 600px;
+    max-width: 600px;
     margin: 2rem auto;
     padding: 2rem;
     border-radius: 12px;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    margin-top: 100px; */
+    margin-top: 100px;
 }
 .login-form input{
 
