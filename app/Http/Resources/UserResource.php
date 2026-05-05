@@ -17,6 +17,7 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'username' => $this->name,
             'email' => $this->email,
             'profile' => $this->profile,
             'profile_info' => ProfileResource::make($this->whenLoaded('profileInfo')),

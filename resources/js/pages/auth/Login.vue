@@ -53,7 +53,8 @@ async function  login() {
         })
         authStore.login(
             response.data.token,
-            response.data.user.id
+            response.data.user.id,
+            response.data.user.username
         )
 
         toast.success('login sucess')

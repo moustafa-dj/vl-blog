@@ -1,5 +1,5 @@
 <template>
-    <form class="post-form" @submit.prevent="updatePost">
+    <form class="post-form" @submit.prevent="onUpdate">
         <input type="text" v-model="form.title">
         <textarea name="content" id="" v-model="form.content"></textarea>
         <select name="category_id" v-model="form.category_id">
@@ -23,17 +23,21 @@
             >
         </div>
         <input type="file" name="cover" id="" @change="uploadCover">
-        <button type="submit">Update</button>
+        <button type="submit">
+            <span v-if="loading">...</span>
+            <span v-else>Submit</span>
+        </button>
     </form>
 </template>
 <script setup>
 import { authStore } from '../../../stores/authStore';
-import { useToast } from '../../../Composables/useToast';
-import { useRoute , useRouter } from 'vue-router';
+import { useRoute} from 'vue-router';
 import { ref ,watch , onMounted} from 'vue';
+import { usePost } from '../../../Composables/usePost';
 
     const route = useRoute()
-    const toast = useToast()
+
+    const {updatePost , loading , error} = usePost()
 
     const form = ref({
         title:null,
@@ -42,7 +46,10 @@ import { ref ,watch , onMounted} from 'vue';
         category_id:null,
         tags:[]
     })
-
+ 
+    const onUpdate = () => {
+        updatePost(route.params.id , form.value)
+    }
     const categories = ref([])
     const tagsList = ref([])
     const imgUrl = ref()
@@ -93,33 +100,7 @@ import { ref ,watch , onMounted} from 'vue';
         }
         cover()
     }
-    async function updatePost(){
-        try{
-            const postData = new FormData()
-            postData.append('title',form.value.title)
-            if(form.cover instanceof File) {
-                postData.append('cover', form.value.cover)
-            }
-            postData.append('content',form.value.content),
-            postData.append('category_id',form.value.category_id)
-            form.value.tags.forEach((e , i) =>{
-                postData.append(`tags[${i}]`,e)
-            })
 
-            const res = await  axios.post('/api/v1/user/posts/'+route.params.id,
-                postData,
-                {
-                    headers:{
-                        'Authorization': `Bearer ${authStore.getAuthorization()}`,
-                    },
-                }
-            )
-            toast.success('post updated successfully')
-        }catch(error){
-            toast.error(error.data)
-            console.log(error)
-        }
-    }
     function uploadCover(event){
         const file = event.target.files[0]
         form.value.cover = file

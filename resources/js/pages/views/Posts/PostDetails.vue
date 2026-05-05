@@ -10,7 +10,10 @@
       <h1>{{ post.title }}</h1>
 
       <div class="post-meta">
-        <span class="author">By {{ post.user?.name || 'Unknown' }}</span>
+        <router-link :to="{name:'profile', params:{'username': post?.user?.username ?? ''}}" class="author">
+          By {{ post.user?.name || 'Unknown' }}
+        </router-link>
+
         <span class="date">{{ new Date(post.created_at).toLocaleDateString() }}</span>
       </div>
     </div>

@@ -9,16 +9,15 @@ class Profile extends Model
 {
     protected $fillable = [
         'user_id',
-        'bio',
-        'nb_following',
-        'nb_followers',
-        'social_links'
+        'headline',
+        'about',
+        'social_links',
+        'image',
+        'cover'
     ];
 
     protected $casts = [
         'user_id' => 'integer',
-        'nb_following' => 'integer',
-        'nb_followers' => 'integer',
         'social_links' => 'array'
     ];
 

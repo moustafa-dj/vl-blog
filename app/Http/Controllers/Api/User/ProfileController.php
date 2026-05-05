@@ -16,11 +16,11 @@ class ProfileController extends Controller
         
     }
 
-    public function me(Request $request)
+    public function me(string $username , Request $request)
     {
         $profile = $this->profile->findBy(
             [
-                'user_id' => auth('user-api')->user()->id
+                'username' => $username
             ]
         );
 

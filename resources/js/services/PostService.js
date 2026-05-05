@@ -12,5 +12,17 @@ export const PostService = {
                 'Authorization': `Bearer ${authStore.getAuthorization()}`,
             }
         })
+    },
+
+    async update(id , pyload){
+        return await  axios.post('/api/v1/user/posts/'+id,
+            pyload,
+            {
+                headers:{
+                    'Authorization': `Bearer ${authStore.getAuthorization()}`,
+                },
+            }
+        )
     }
+
 }

@@ -3,7 +3,11 @@
         <div class="container">
             <div class="nav-content">
                 <ul>
-                    <li><router-link :to="{name:'home'}">Home</router-link></li>
+                    <li>
+                        <router-link :to="{name:'home'}">
+                            VL-BLOG
+                        </router-link>
+                    </li>
                     <li><router-link :to="{name:'posts'}">Posts</router-link></li>
                     <li><router-link :to="{name:'add-post'}" v-if="isAuthenticated">Add Post</router-link></li>
                 </ul>
@@ -13,7 +17,7 @@
                     </form>
                 </div>
                 <router-link to="/" @click.prevent="logout" v-if="isAuthenticated">Logout</router-link>
-                <router-link to="/me" v-if="isAuthenticated">profile</router-link>
+                <router-link :to="{name:'profile', params:{'username': userName ?? ''}}" v-if="isAuthenticated">profile</router-link>
                 <router-link to="/login" v-else >Login</router-link>
                 <router-link to="/register" v-if="!isAuthenticated">Register</router-link>
             </div>
@@ -53,6 +57,10 @@
     const isAuthenticated = computed (()=>{
         return authStore.auth
     })
+
+    const userName =  computed (()=>{
+        return authStore.userName
+    })
 </script>
 <style>
 .container{
@@ -78,7 +86,7 @@
 }
 .nav-content ul li {
     display: inline;
-    margin: 10px;
+    margin: 6px;
 }
 .search input {
     background-color: #eee;
@@ -86,5 +94,9 @@
     border-radius: 5px;
     padding: 7px;
     width: 500px;
+}
+svg{
+    height: 30px;
+    width: 20px;
 }
 </style>

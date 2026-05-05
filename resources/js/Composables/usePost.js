@@ -1,7 +1,8 @@
 import { ref } from "vue";
 import { PostService } from "../services/PostService";
 import { useToast } from './useToast';
-export function usePost(post = null){
+import { PostDto } from "../services/Dto/PostDto";
+export function usePost(){
 
     const postList = ref([])
     const loading = ref(false)
@@ -23,26 +24,35 @@ export function usePost(post = null){
         }
     }
 
-    const createPost = async () => {
+    const createPost = async (post) => {
         loading.value = true
         error.value = null
-        const pyload = new FormData();
-        pyload.append('cover',post.value.cover)
-        pyload.append('title',post.value.title)
-        pyload.append('content',post.value.content)
-        pyload.append('category_id',post.value.category_id)
-        post.value.tags.forEach((e , i) => {
-            pyload.append(`tags[${i}]`,e)
-        })
+        const pyload = PostDto(post)
 
         try{
             const res = PostService.create(pyload)
             toast.success('post added')
         }catch(error){
             toast.error(error.response?.data?.message ?? 'Something went wrong')
+            console.log(error.response?.data?.message);
         }finally{
             loading.value = false
         }
     }
-    return { postList  ,  fetchPosts , createPost, error , loading}
+
+    const updatePost = async (id , post) => { 
+        loading.value = true;
+        error.value = null
+        try{
+            const pyload = PostDto(post)
+            const res = await PostService.update(id , pyload)
+            toast.success('post updated successfully')
+        }catch(error){
+            toast.error(error.response.data.message)
+            console.log(error)
+        }finally{
+            loading.value = false
+        }
+    }
+    return { postList  ,  fetchPosts , createPost, updatePost, error , loading}
 }

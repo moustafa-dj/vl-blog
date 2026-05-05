@@ -1,5 +1,5 @@
 <template>
-    <Form  class="post-form" @submit="createPost" :validation-schema="PostSchema" v-slot="{errors}">
+    <Form  class="post-form" @submit="onSubmit" :validation-schema="PostSchema" v-slot="{errors}">
         <Field 
             type="text"
             v-model="post.title"
@@ -45,7 +45,11 @@ import { useFetch } from '../../../Composables/useFetch';
         tags:[]
     })
 
-    const {createPost , loading} = usePost(post)
+    const {createPost, loading} = usePost()
+
+    const onSubmit = () =>{
+        createPost(post.value)
+    }
     const{data: categories , fetch: fetchCategories} = useFetch(
         'api/v1/user/categories',
         true
