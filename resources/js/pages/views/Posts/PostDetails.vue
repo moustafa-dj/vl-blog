@@ -10,7 +10,7 @@
       <h1>{{ post.title }}</h1>
 
       <div class="post-meta">
-        <router-link :to="{name:'profile', params:{'username': post?.user?.username ?? ''}}" class="author">
+        <router-link :to="{name:'profile', params:{'username': post?.user?.username ?? 'user'}}" class="author">
           By {{ post.user?.name || 'Unknown' }}
         </router-link>
 
@@ -34,7 +34,7 @@
       >
         ✏️ Edit
       </router-link>
-      <button class="btn-delete" @click="deletePost">🗑 Delete</button>
+      <button class="btn-delete" @click="onDelete">🗑 Delete</button>
     </div>
 
     <!-- Comments Section -->
@@ -76,40 +76,27 @@ import CommentForm from "../../../components/Forms/Comment/CommentForm.vue";
 import { computed } from "vue";
 import { useRouter , useRoute } from "vue-router";
 import { ref, onMounted } from 'vue';
-import { useToast } from "../../../Composables/useToast";
+import { usePost } from "../../../Composables/usePost";
 
-  const toast = useToast()
-  const post = ref();
   const commentList = ref([]);
   const router = useRouter();
   const route = useRoute();
+  const {post , deletePost ,fetchPostById, loading , error} = usePost()
 
     onMounted(()=>{
-      getPost()
+      fetchPost()
     })
 
     function getImgUrl(cover) {
       return "/file/" + cover;
     }
 
-    async function getPost() {
-      try {
-        const res = await axios.get(
-          "/api/v1/user/posts/" + route.params.id,
-          {
-            headers: {
-              Authorization: `Bearer ${authStore.getAuthorization()}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        post.value = res.data.record;
-        console.log(res.data.record.comments)
-        commentList.value = res.data.record.comments
-      } catch (error) {
-        console.error(error.response.data);
-      }
+
+    const fetchPost = async()=>{
+      await fetchPostById(postId())
+      commentList.value = post.value.comments
     }
+
     async function getComments() {
       try {
         const res = await axios.get("/api/v1/user/comments", {
@@ -120,20 +107,16 @@ import { useToast } from "../../../Composables/useToast";
         console.error(error.response.data);
       }
     }
-    async function deletePost() {
-      try {
-        await axios.delete(`/api/v1/user/posts/${post.id}`, {
-          headers: {
-            Authorization: `Bearer ${authStore.getAuthorization()}`,
-            "Content-Type": "application/json",
-          },
-        });
-        toast.success('post deleted successfully');
-        router.push({ name: "home" });
-      } catch (error) {
-        console.error(error);
-      }
+
+    const postId = () => {
+      return route.params.id
     }
+
+    const onDelete = () => {
+      deletePost(postId())
+      router.push({ name: "home" });
+    }
+
     const isAuthenticated = computed(()=>{
       return authStore.auth
     })

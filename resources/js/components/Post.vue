@@ -19,7 +19,7 @@
             <button
                 v-if="isAuthenticated  && post.user?.id === userId"
                 class="delete-btn"
-                @click="deletePost"
+                @click="onDelete"
             >Delete
             </button>
         </div>
@@ -49,6 +49,7 @@ import { authStore } from '../stores/authStore';
 import { ref } from 'vue';
 import { computed } from 'vue';
 import { useToast } from '../Composables/useToast';
+import { usePost } from '../Composables/usePost';
 
     const props = defineProps({
         post: {
@@ -57,11 +58,21 @@ import { useToast } from '../Composables/useToast';
         }
     })
 
+
     const toast = useToast()
+    const {deletePost , loading , error} = usePost()
     const commentList = ref([])
 
     const emits = defineEmits(['delete-post'])
 
+    const postId = () => {
+        return props.post.id
+    }
+
+    const onDelete = async () => {
+        deletePost(postId())
+        emits('delete-post')
+    }
 
     const isAuthenticated = computed(()=>{
         return authStore.auth
@@ -81,25 +92,25 @@ import { useToast } from '../Composables/useToast';
         return 'file/'+cover
     }
     
-    async function deletePost()
-    {
-        try{
-            const res = await axios.delete('/api/v1/user/posts/'+props.post.id,{
-                headers:{
-                    'Authorization': `Bearer ${authStore.getAuthorization()}`,
-                    "Content-Type":"application/json"
-                },
-            })
+    // async function deletePost()
+    // {
+    //     try{
+    //         const res = await axios.delete('/api/v1/user/posts/'+props.post.id,{
+    //             headers:{
+    //                 'Authorization': `Bearer ${authStore.getAuthorization()}`,
+    //                 "Content-Type":"application/json"
+    //             },
+    //         })
 
-            emits('delete-post')
+    //         emits('delete-post')
 
-            toast.success('post deleted successfully');
+    //         toast.success('post deleted successfully');
 
-        }catch(error)
-        {
-            console.log(error.response.data)
-        }
-    }
+    //     }catch(error)
+    //     {
+    //         console.log(error.response.data)
+    //     }
+    // }
 </script>
 <style>
     .post {

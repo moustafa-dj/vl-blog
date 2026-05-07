@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="content" v-if="data.length">
-            <Post v-for="post in data" :key="post.id" :post="post" @delete-post="getPostsList"/>
+            <Post v-for="post in data" :key="post.id" :post="post" @delete-post="fetch"/>
         </div>
         <div v-else>
             <h4>No poasts available</h4>
