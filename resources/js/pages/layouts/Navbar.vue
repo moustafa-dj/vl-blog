@@ -13,7 +13,7 @@
                 </ul>
                 <div class="search">
                     <form action="" @submit.prevent="search">
-                        <input type="search" placeholder="...search" v-model="searchQ.searchQuery">
+                        <input type="search" placeholder="...search" v-model="searchQ.searchQuery" class="bg-[#f5f8fc]">
                     </form>
                 </div>
                 <router-link to="/" @click.prevent="logout" v-if="isAuthenticated">Logout</router-link>
@@ -89,7 +89,6 @@
     margin: 6px;
 }
 .search input {
-    background-color: #eee;
     outline: none;
     border-radius: 5px;
     padding: 7px;

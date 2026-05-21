@@ -17,8 +17,9 @@ class ProfileResource extends JsonResource
         return [
             'id' => $this->id,
             'bio' => $this->bio,
-            'nb_following' => $this->nb_following,
-            'nb_followers' => $this->nb_followers,
+            'headline' => $this->headline,
+            'image' => $this->image,
+            'cover' => $this->cover,
             'social_links' => $this->social_links,
             'user' => UserResource::make($this->whenLoaded('user'))
         ];

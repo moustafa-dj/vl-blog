@@ -6,19 +6,22 @@ use App\Contracts\PostContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostRequest;
 use App\Http\Resources\PostResource;
+use App\Services\Post\CreatePostService;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
     
-    public function __construct(private readonly PostContract $post)
+    public function __construct(
+        private readonly PostContract $post,
+    )
     {
         
     }
 
     public function index(Request $request)
     {
-        $posts = $this->post->withRelations(['category','tags','comments','user'])
+        $posts = $this->post->withRelations(['tags','comments','user'])
                             ->findWithoutPagination();
 
         return response()->json([
@@ -28,7 +31,7 @@ class PostController extends Controller
 
     public function myPosts()
     {
-        $posts = $this->post->withRelations(['category','tags','comments','user'])
+        $posts = $this->post->withRelations(['tags','comments','user'])
                             ->setScopes(['byUser'=> auth('user-api')->user()->id])
                             ->findByFilter();
 
@@ -43,13 +46,15 @@ class PostController extends Controller
 
         try{
 
-            $post = $this->post->create([
-                ...$data,
-                'user_id' => auth('user-api')->user()->id,
-            ]);
+            $post = CreatePostService::make(
+                [
+                    ...$data,
+                    'user_id' => auth('user-api')->user()->id,
+                ]
+            );
 
             return response()->json([
-                'record' => PostResource::make($post->load('category','tags','comments','user')),
+                'record' => PostResource::make($post->load('tags','comments','user')),
             ]);
 
         }catch(\Exception $e)
@@ -62,7 +67,7 @@ class PostController extends Controller
 
     public function show($id)
     {
-        $post = $this->post->withRelations(['category','tags','comments','user'])->findById($id);
+        $post = $this->post->withRelations(['tags','comments','user'])->findById($id);
 
         return response()->json([
             'record' => PostResource::make($post)
@@ -84,7 +89,7 @@ class PostController extends Controller
             $post = $this->post->update($id , $data);
 
             return response()->json([
-                'record' => PostResource::make($post->load('category','tags','comments','user')),
+                'record' => PostResource::make($post->load('tags','comments','user')),
             ]);
         }catch(\Exception $e){
             return response()->json([

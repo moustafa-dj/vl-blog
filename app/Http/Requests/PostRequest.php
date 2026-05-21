@@ -24,9 +24,6 @@ class PostRequest extends FormRequest
         return [
             'content' => 'required|string|max:1024',
             'title' => 'required|string|max:256',
-            'category_id' => 'required|exists:categories,id',
-            'tags' => 'nullable|array',
-            'tags.*' => 'required|exists:tags,id',
             'cover' => 'nullable|file|mimes:png,jpg,jpeg',
         ];
     }

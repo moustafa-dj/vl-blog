@@ -1,17 +1,20 @@
 <template class="">
     <div 
-    class="login-form w-full 
-       flex flex-col"
+        class="flex justify-center items-center w-lg h-lg"
     >
         <Form  method="post" @submit="login" :validation-schema="LoginSchema" v-slot="{errors}">
-            <label for="">Email</label>
-            <Field 
-                type="email"
-                v-model="email"
-                as="input"
-                name="email"
-                class="block bg-gray-300 m-2 p-2"
-            >
+            <Field name="email" v-slot="{ field, errors }">
+                <input
+                    type="email"
+                    v-bind="field"
+                    v-model="email"
+                    placeholder="email"
+                    class="block mb-4 p-2 border border-transparent
+                    rounded-lg bg-[rgba(173_184_212/0.08)]
+                    outline-none
+                    focus:border-[#e5e7eb]
+                    w-full"
+                />
             </Field>
             <ErrorMessage class="text-danger" name="email" />
             <Field 
@@ -19,11 +22,32 @@
                 v-model="password"
                 name="password"
                 placeholder="password"
-                class="block bg-gray-300 m-2"
+                v-slot="{field , errors}"
             >
+                <input 
+                    type="password"
+                    v-model="password"
+                    name="password"
+                    placeholder="password"
+                    class="block mb-4 p-2 border border-transparent
+                     outline-none rounded-lg bg-[rgba(173_184_212/0.08)]
+                     focus:border-[#e5e7eb]"
+                >
             </Field>
             <ErrorMessage class="text-danger" name="password" />
-            <button>Login</button>
+            <button 
+                class="
+                    block mt-2 p-2
+                    bg-black
+                    text-center boder 
+                    border-gray-300
+                    rounded-lg
+                    text-[oklch(98.8%_0.003_106.5)]
+                    w-full
+                    cursor-pointer
+                    "
+                >Login
+            </button>
         </Form>
     </div>
 </template>
@@ -66,26 +90,5 @@ async function  login() {
 }
 </script>
 <style>
-.login-form{
-    max-width: 600px;
-    margin: 2rem auto;
-    padding: 2rem;
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    margin-top: 100px;
-}
-.login-form input{
 
-}
-
-button{
-    margin-top: 10px;
-    background-color: #35b37b;
-    color: #fff;
-    padding: 8px;
-    width: 100%;
-    cursor: pointer;
-}
 </style>

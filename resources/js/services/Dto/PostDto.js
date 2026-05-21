@@ -6,7 +6,6 @@ export function PostDto(post){
         postData.append('cover', post.cover)
     }
     postData.append('content',post.content),
-    postData.append('category_id',post.category_id)
     post.tags.forEach((e , i) =>{
         postData.append(`tags[${i}]`,e)
     })

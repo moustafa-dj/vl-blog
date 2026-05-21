@@ -17,10 +17,11 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'username' => $this->name,
+            'username' => $this->username,
             'email' => $this->email,
             'profile' => $this->profile,
-            'profile_info' => ProfileResource::make($this->whenLoaded('profileInfo')),
+            'joined_at' => $this->created_at,
+            'profileInfo' => ProfileResource::make($this->whenLoaded('profileInfo')),
             'posts'=> PostResource::collection($this->whenLoaded('posts')),
         ];
     }

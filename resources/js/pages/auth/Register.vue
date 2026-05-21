@@ -1,43 +1,114 @@
 <template>
-    <div class="login-form">
-        <form  method="post">
-            <label for="">Name</label>
-            <br>
-            <input type="text" placeholder="name" name="name" v-model="user.name">
-            <br>
-            <label for="">User Name</label>
-            <br>
-            <input type="text" placeholder="user name" name="username" v-model="user.username">
-            <br>
-            <label for="">Email</label>
-            <br>
-            <input type="text" placeholder="email adress" name="email" v-model="user.email">
-            <br>
-            <!-- <label for="">Profile</label>
-            <br>
-            <input type="file" placeholder="" name="profile" @change="uploadCover">
-            <br> -->
-            <label for="">Password</label>
-            <br>
-            <input type="password" placeholder="password" name="password" v-model="user.password">
-            <br>
-            <label for="">Confirm Password</label>
-            <br>
-            <input type="password" placeholder="password" name="password_confirmation" v-model="user.password_confirmation">
-            <br>
-            <button @click.prevent="register">
+    <div class="flex items-center justify-center w-lg h-lg">
+        <Form  method="post" @submit="register" v-slot="{errors}" :validation-schema="RegisterSchema">
+            <Field name="name" v-slot="{field,errors}">
+                <input 
+                    type="text" 
+                    placeholder="name"
+                    name="name" 
+                    v-bind="field"
+                    v-model="user.name"
+                    class="
+                        block mb-4 p-2 border border-transparent
+                        outline-none rounded-lg bg-[rgba(173_184_212/0.08)]
+                        focus:border-[#e5e7eb]"
+                >
+            </Field>
+            <ErrorMessage class="text-danger" name="name" />
+
+            <Field name="username" v-slot="{field,errors}">
+                <input 
+                    type="text" 
+                    placeholder="user name"
+                    name="name" 
+                     v-bind="field"
+                    v-model="user.username"
+                    class="
+                        block mb-4 p-2 border border-transparent
+                        outline-none rounded-lg bg-[rgba(173_184_212/0.08)]
+                        focus:border-[#e5e7eb]"
+                >
+            </Field>
+            <ErrorMessage class="text-danger" name="name" />
+            <Field name="email" v-slot="{field,errors}">
+                <input 
+                    type="text" 
+                    placeholder="email"
+                    name="email" 
+                    v-bind="field"
+                    v-model="user.email"
+                    class="
+                        block mb-4 p-2 border border-transparent
+                        outline-none rounded-lg bg-[rgba(173_184_212/0.08)]
+                        focus:border-[#e5e7eb]"
+                >
+            </Field>
+            <ErrorMessage class="text-danger" name="email" />
+            <Field 
+                type="password"
+                v-model="password"
+                name="password"
+                placeholder="password"
+                v-slot="{field , errors}"
+            >
+                <input 
+                    type="password"
+                    v-model="password"
+                    name="password"
+                    v-bind="field"
+                    placeholder="password"
+                    class="block mb-4 p-2 border border-transparent
+                     outline-none rounded-lg bg-[rgba(173_184_212/0.08)]
+                     focus:border-[#e5e7eb]"
+                >
+            </Field>
+            <ErrorMessage class="text-danger" name="password" />
+
+            <Field 
+                type="password"
+                v-model="user.password"
+                name="password_confirmation"
+                placeholder="password"
+                v-slot="{field , errors}"
+            >
+                <input 
+                    type="password"
+                    v-model="user.password_confirmation"
+                    v-bind="field"
+                    name="password_confirmation"
+                    placeholder="Confirm Password"
+                    class="block mb-4 p-2 border border-transparent
+                     outline-none rounded-lg bg-[rgba(173_184_212/0.08)]
+                     focus:border-[#e5e7eb]"
+                >
+            </Field>
+            <ErrorMessage class="text-danger" name="password_confirmation" />
+            <button 
+                class="
+                    block mt-2 p-2
+                    bg-black
+                    text-center boder 
+                    border-gray-300
+                    rounded-lg
+                    text-[oklch(98.8%_0.003_106.5)]
+                    w-full
+                    cursor-pointer
+                    "
+                >
                 <span v-if="loading">...</span>
                 <span v-else>Register</span>
             </button>
-        </form>
+        </Form>
     </div>
 </template>
 <script setup>
 import axios from 'axios';
 import { authStore } from '../../stores/authStore';
-import { useToast } from '../../Composables/useToast';
 import { ref } from 'vue';
 import { useRoute , useRouter} from 'vue-router';
+import { useToast } from '../../Composables/useToast';
+import { Form, Field, ErrorMessage } from 'vee-validate';
+import { RegisterSchema } from '../../Rules/RegisterSchema';
 
 const user = ref({
     email:'',
@@ -60,10 +131,9 @@ async function register() {
     userData.append('password' , user.value.password)
     userData.append('profile',user.value.profile)
     userData.append('password_confirmation' , user.value.password_confirmation)
-
-    try{
         loading.value = true
         error.value = null
+    try{
 
         const response = await axios.post('/api/v1/user/register',userData)
         authStore.login(
@@ -86,22 +156,7 @@ async function register() {
 // }
 </script>
 <style>
-.login-form{
-    padding: 20px;
-}
-.login-form input{
-    margin: 10px 0;
-    border: 1px solid #e5e7eb; /* Light gray border */
-    padding: 8px;
-    background-color: #fff;
-}
+    /*background-color: #35b37b;*/
 
-button{
-    margin-top: 10px;
-    background-color: #35b37b;
-    color: #fff;
-    padding: 8px;
-    width: 100%;
-    cursor: pointer;
-}
+
 </style>

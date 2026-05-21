@@ -1,15 +1,30 @@
 <template>
-    <div class="post">
-        <div class="cover">
-            <img :src="getImgUrl(post.cover)" alt="">
-        </div>
-        <div class="post-header">
-            <h5>
+    <div class="border border-[#e5e7eb] rounded-xl">
+        <div class="p-3">
+            <div class="w-8 h-8 rounded-full overflow-hidden border border-gray-300 mt-2">
+                <img
+                    v-if="post?.user?.cover"
+                    :src="getImgUrl(post.user.cover)"
+                    class="w-full h-full object-cover"
+                />
+                <img
+                    v-else
+                    src="../assets/images/noProfile.webp"
+                    class="w-full h-full object-cover"
+                />
+            </div>
+            <h1 class="block w-full max-h-5 mt-4 text-xl font-bold">
                 <router-link :to="{name:'post-details',params:{'id':post.id}}">
                     {{ post.title }}
                 </router-link>
-            </h5>
-            <router-link :to="{name:'edit-post' ,params:{'id': post.id}}" 
+            </h1>
+        <div class="max-h-10 min-h-10 flex content-start mt-4 mb-2">
+            <span v-for=" tag in post.tags" :key="tag.id"
+            class="border border-[rgba(77_96_138/0.21)] mr-2 p-1 rounded-lg text-sm h-7 text-[rgba(77_96_138/0.21)]">
+                #{{ tag.name }}
+            </span>
+        </div>
+            <!-- <router-link :to="{name:'edit-post' ,params:{'id': post.id}}" 
                             class="edit-link" 
                             v-if="isAuthenticated  && post.user?.id === userId"
             >
@@ -21,17 +36,13 @@
                 class="delete-btn"
                 @click="onDelete"
             >Delete
-            </button>
+            </button> -->
         </div>
-        <p>
-            {{shortenContent}}
-        </p>
-        <div class="tags">
-            <span v-for=" tag in post.tags" :key="tag.id">
-                #{{ tag.name }}
-            </span>
+
+        <div class="h-50 overflow-hidden">
+            <img :src="getImgUrl(post.cover)" alt="">
         </div>
-        <div class="stats">
+        <div class="p-2">
             <p>
                 <router-link :to="{name:'post-details',params:{'id':post.id}}">
                     <span>
@@ -57,7 +68,6 @@ import { usePost } from '../Composables/usePost';
             required: true
         }
     })
-
 
     const toast = useToast()
     const {deletePost , loading , error} = usePost()
@@ -113,112 +123,7 @@ import { usePost } from '../Composables/usePost';
     // }
 </script>
 <style>
-    .post {
-        height: 400px;
-        max-width: 500px;
-        border: 1px solid #e5e7eb;
-        border-radius: 10px;
-        overflow: hidden;
-        background-color: #fafaf9;
-        transition: transform 0.2s;
-        margin-bottom: 20px;
-        border: 1px solid rgba(77, 96, 138, 0.21);
-    }
-
-    .post:hover {
-        transform: translateY(-5px);
-    }
-
-    .post .cover {
-        height: 150px;
-        overflow: hidden;
-    }
-
-    .post .cover img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-    }
-
-    .post h5 {
-        margin: 12px;
-        font-size: 18px;
-        font-weight: 600;
-        color: #111827;
-    }
-
-    .post p {
-        margin: 0 12px 12px 12px;
-        font-size: 14px;
-        color: #4b5563;
-        line-height: 1.5;
-    }
-    .comment-list{
-        padding: 0 20px;
-    }
-
-    .post-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin: 12px;
-    }
-
-    .edit-link {
-        font-size: 14px;
-        background-color: #f3f4f6;
-        color: #2563eb;
-        padding: 6px 12px;
-        border-radius: 8px;
-        text-decoration: none;
-        transition: background-color 0.2s ease, color 0.2s ease;
-    }
-
-    .edit-link:hover ,.delete-btn:hover{
-        background-color: #e0e7ff;
-        color: #1e3a8a;
-    }
-    .delete-btn {
-        font-size: 14px;
-        background-color: #f3f4f6;
-        color: #2563eb;
-        padding: 6px 12px;
-        border-radius: 8px;
-        text-decoration: none;
-        transition: background-color 0.2s ease, color 0.2s ease;
-        cursor: pointer;
-    }
-    .tags{
-        margin-top: 10px;
-        padding: 10px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px; /* consistent spacing between posts */
-        justify-content: flex-start; /* align posts to the left */
-    }
-    .tags span{
-        border-radius: 15%;
-        padding: 8px;
-        border: 1px solid rgba(77, 96, 138, 0.21);
-        font-size: 13px;
-    }
 
 
-
-    .stats{
-        margin-top: 10px;
-        padding: 10px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px; /* consistent spacing between posts */
-        justify-content: flex-start; /* align posts to the left */
-    }
-    .stats span{
-        border-radius: 15%;
-        padding: 8px;
-        font-size: 20px;
-        vertical-align: middle;
-    }
 
 </style>

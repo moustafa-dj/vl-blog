@@ -19,7 +19,6 @@ class PostResource extends JsonResource
             'title' => $this->title,
             'content' => $this->content,
             'cover' => $this->cover,
-            'category' => CategoryResource::make($this->whenLoaded('category')),
             'tags' => TagResource::collection($this->whenLoaded('tags')),
             'comments' => CommentResource::collection($this->whenLoaded('comments')),
             'user' => UserResource::make($this->whenLoaded('user')),

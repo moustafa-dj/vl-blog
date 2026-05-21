@@ -11,7 +11,6 @@ class Post extends Model
 {
     protected $fillable = [
         'user_id',
-        'category_id',
         'title',
         'content',
         'cover'
@@ -19,7 +18,6 @@ class Post extends Model
 
     protected $casts = [
         'user_id' => 'integer',
-        'category_id' => 'integer'
     ];
 
     public function scopeByUser($query , $user_id)
@@ -29,11 +27,6 @@ class Post extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function category(): BelongsTo
-    {
-        return $this->belongsTo(Category::class);
     }
 
     public function comments():HasMany

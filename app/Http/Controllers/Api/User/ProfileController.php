@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Contracts\ProfileContract;
+use App\Contracts\UserContract;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProfileResource;
+use App\Http\Resources\UserResource;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ProfileController extends Controller
 {
     public function __construct(
-        private readonly ProfileContract $profile
+        private readonly UserContract $user
     )
     {
         
@@ -18,14 +21,14 @@ class ProfileController extends Controller
 
     public function me(string $username , Request $request)
     {
-        $profile = $this->profile->findBy(
+        $profile = $this->user->withRelations(['profileInfo','posts.comments'])->findBy(
             [
                 'username' => $username
             ]
         );
 
         return response()->json([
-            'record' => ProfileResource::make($profile->load('user.posts')),
+            'record' => UserResource::make($profile),
         ]);
     }
 }

@@ -1,31 +1,47 @@
 <template>
-    <Form  class="post-form" @submit="onSubmit" :validation-schema="PostSchema" v-slot="{errors}">
-        <Field 
-            type="text"
-            v-model="post.title"
-            name="title"
-        >
-        </Field>
-        <ErrorMessage class="text-danger" name="title" />
-        <Field name="content" id="" v-model="post.content" as="textarea"></Field>
-        <ErrorMessage class="text-danger" name="content" />
-        <Field name="category_id" id="" v-model="post.category_id" as="select">
-            <option v-for="category in categories" :key="category.id" :value="category.id">
-                {{category.name}}
-            </option>
-        </Field>
-        <ErrorMessage class="text-danger" name="category_id" />
-        <select name="tags[]" id="" v-model="post.tags" multiple>
-            <option v-for="tag in tagsList" :key="tag.id" :value="tag.id">
-                {{tag.name}}
-            </option>
-        </select>
-        <input type="file" name="cover" id="" @change="uploadCover">
-        <button type="submit" :disabled="loading">
-            <span v-if="loading">...</span>
-            <span v-else>Add</span>
-        </button>
-    </Form>
+    <div
+        class="w-[600px] m-auto h-screen border-x border-x-[#e5e7eb] mt-[50px]"
+    >
+        <div class="w-full border-b border-[#e5e7eb] flex items-center justify-center text-black">
+            <div class="w-[90%] m-auto py-2 font-bold text-[20px]">
+                New Post
+            </div>
+        </div>
+        <div class="pt-[40px] w-[90%] m-auto">
+            <Form  class="post-form" @submit="onSubmit" :validation-schema="PostSchema" 
+            v-slot="{errors}"
+            >
+                <Field 
+                    type="text"
+                    v-model="post.title"
+                    name="title"
+                    placeholder="Post Title *"
+                    class="block w-full px-2 py-3 bg-[#f1f2f3] mx-auto mb-[30px] rounded-xl"
+                >
+                </Field>
+                <ErrorMessage class="text-danger" name="title" />
+                <Field name="content" id="" v-model="post.content" as="textarea"
+                    class="block w-full px-2 py-3 bg-[#f1f2f3] rounded-xl mx-auto mb-[30px]
+                    h-40"
+                    placeholder="Share your thoughts"
+                ></Field>
+                <ErrorMessage class="text-danger" name="content" />
+                
+                <input type="file" name="cover" id="" @change="uploadCover"
+                    class="block w-full px-2 py-3 bg-[#f1f2f3] rounded-xl mx-auto mb-[30px]"
+                >
+                <div class="w-full mx-auto flex justify-end">
+                    <button type="submit" :disabled="loading"
+                        class="px-12 py-2 bg-[#ac1de4] rounded-xl text-white font-bold cursor-pointer"
+                    >
+                        <span v-if="loading">...</span>
+                        <span v-else>Post</span>
+                    </button>
+                </div>
+            </Form>
+        </div>
+    </div>
+
 </template>
 
 <script setup>
@@ -48,75 +64,13 @@ import { useFetch } from '../../../Composables/useFetch';
     const {createPost, loading} = usePost()
 
     const onSubmit = () =>{
+        console.log(post.value)
         createPost(post.value)
     }
-    const{data: categories , fetch: fetchCategories} = useFetch(
-        'api/v1/user/categories',
-        true
-    )
-
-    const{data: tagsList , fetch: fetchTags} = useFetch(
-        'api/v1/user/categories',
-        true
-    )
-
-    onMounted(()=>{
-        fetchCategories(),
-        fetchTags()
-    })
-
+    
     function uploadCover(event){
         post.value.cover = event.target.files[0]
     }
 </script>
 <style scoped>
-    .post-form {
-        max-width: 600px;
-        margin: 2rem auto;
-        padding: 2rem;
-        border-radius: 12px;
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-        margin-top: 100px;
-    }
-
-    .post-form input[type="text"],
-    .post-form textarea,
-    .post-form select {
-        width: 100%;
-        padding: 12px;
-        font-size: 16px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        background-color: #fff;
-        transition: border 0.3s ease;
-    }
-
-    .post-form input:focus,
-    .post-form textarea:focus,
-    .post-form select:focus {
-        border-color: #007bff;
-        outline: none;
-    }
-
-    .post-form textarea {
-        resize: vertical;
-        min-height: 120px;
-    }
-
-    .post-form button {
-        padding: 12px;
-        font-size: 16px;
-        border: none;
-        background-color: #57C785;
-        color: white;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: background 0.3s ease;
-    }
-
-    .post-form button:hover {
-        background-color: #57C785;
-    }
 </style>
